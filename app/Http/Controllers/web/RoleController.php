@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\web;
 
+use App\User;
 use Illuminate\Http\Request;
+use App\Library\ActivityLogLib;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Spatie\Permission\Models\Permission;
-use App\User;
 
 class RoleController extends Controller
 {
@@ -18,6 +19,7 @@ class RoleController extends Controller
         $allPermissions = Permission::all();
         $allRoles = Role::all();
         $users = User::all();
+        ActivityLogLib::addLog('View role and permission list successfully', 'success');
         return view('pages.role.index', ['allRoles' => $allRoles, 'roles' => $roles, 'permissions' => $permissions, 'allPermissions' => $allPermissions, 'users' => $users]);
     }
 
@@ -37,9 +39,11 @@ class RoleController extends Controller
         $role = Role::create(['name' => $name]);
 
         if ($role) {
+            ActivityLogLib::addLog('User has created a new role successfully.', 'success');
             Toastr::success('New ' . $role->name . ' role has created successfully.', 'success');
             return redirect()->back();
         } else {
+            ActivityLogLib::addLog('User has tried to create new role but failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }

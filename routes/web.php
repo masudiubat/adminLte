@@ -60,3 +60,22 @@ Route::post('/role/store', 'web\RoleController@store')->name('role.store');
 Route::post('/role/privilege/store', 'web\RoleController@privilege_store')->name('role.privilege.store');
 Route::get('/check/role/permissions/{id}', 'web\RoleController@check_permissions')->name('check.role.permissions');
 Route::get('/check/user/direct/permission/{id}', 'web\RoleController@check_direct_permission')->name('check.user.direct.permission');
+
+/**
+ * Activity log related routes
+ */
+Route::get('/activity/log', 'web\ActivityLogController@index')->name('activity.log');
+
+/**
+ *  Skill related all routes
+ */
+Route::get('/researcher/skill', 'web\ResearcherSkillController@index')->name('researcher.skill');
+Route::post('/researcher/skill/store', 'web\ResearcherSkillController@store')->name('researcher.skill.store');
+Route::get('/researcher/skill/edit/{id}', 'web\ResearcherSkillController@edit')->name('researcher.skill.edit');
+Route::post('/researcher/skill/update/{id}', 'web\ResearcherSkillController@update')->name('researcher.skill.update');
+Route::delete('/researcher/skill/destroy/{id}', 'web\ResearcherSkillController@destroy')->name('researcher.skill.destroy');
+
+/**
+ * Company reladed routes
+ */
+Route::get('/user/company', 'web\UserCompanyController@index')->name('user.company');

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Library\ActivityLogLib;
 
 class UserController extends Controller
 {
@@ -22,6 +23,7 @@ class UserController extends Controller
         $users = User::with('roles')->get();
         $codes = CountryCode::all();
         $roles = Role::all();
+        ActivityLogLib::addLog('View user list successfully', 'success');
         return view('pages.user.index', ['users' => $users, 'codes' => $codes, 'roles' => $roles]);
     }
 
@@ -106,9 +108,11 @@ class UserController extends Controller
                 $role = $request->input('role');
                 $user->assignRole($role);
             }
+            ActivityLogLib::addLog('User has created a new user successfully.', 'success');
             Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
         } else {
+            ActivityLogLib::addLog('User creation attempt failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }

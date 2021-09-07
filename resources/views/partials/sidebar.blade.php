@@ -22,9 +22,29 @@
     with font-awesome or any other icon font library -->
             <li class="nav-header">ADMINISTRATIVE TOOLS</li>
             <li class="nav-item">
+                <a href="{{route('user.company')}}" class="{{ request()->routeIs('user.company*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-building"></i>
+                    <p>Company </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-laptop-house"></i>
+                    <p>Researcher Skills </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a href="{{route('user.index')}}" class="{{ request()->routeIs('user*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-users"></i>
                     <p>Admin User </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('activity.log')}}" class="{{ request()->routeIs('activity.log*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-keyboard"></i>
+                    <p>Activity Log </p>
                 </a>
             </li>
             <li class="nav-item">

@@ -18,6 +18,7 @@ class CreateUserCompaniesTable extends Migration
             $table->string('name');
             $table->string('code_name')->nullable();
             $table->string('email')->nullable();
+            $table->string('country_code')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('logo')->nullable();

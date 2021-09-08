@@ -22,15 +22,22 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="mobile">Mobile Number <code>*</code></label>
-                    <input type="text" name="mobile" value="{{ $user->mobile }}" class="form-control" id="mobile" placeholder="Enter Mobile Number" required>
-                    <span class="text-danger">{{ $errors->first('mobile') }}</span>
+                    <label for="address">Country Code</label>
+                    <select class="form-control" name="country_code">
+                        <option value="">Select Country Code</option>
+                        @if(!is_null($codes))
+                        @foreach($codes as $code)
+                        <option value="{{$code->code}}" {{ $user->country_code && $user->country_code == $code->code ? 'selected' : ''}}>{{$code->country}} ({{$code->code}})</option>
+                        @endforeach
+                        @endif
+                    </select>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" name="address" value="{{ $user->address }}" class="form-control" id="address" placeholder="Enter Address">
+                    <label for="phone">Phone Number <code>*</code></label>
+                    <input type="text" name="phone" value="{{ $user->phone }}" class="form-control" id="phone" placeholder="Enter Phone Number" required>
+                    <span class="text-danger">{{ $errors->first('phone') }}</span>
                 </div>
             </div>
         </div>
@@ -38,14 +45,25 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="exampleInputFile">Profile Image</label>
-                    <div class="input-group">
-                        <div class="custom-file">
-                            <input type="file" name="image" class="custom-file-input" id="image" accept="image/*" onchange="loadFile(event)">
-                            <label class="custom-file-label" for="image">Choose file</label>
-                        </div>
-                    </div>
-                    <img id="outputForUpdate" src="{{asset('images/users/'. $user->image)}}" style="margin-top: 10px" height="150px" />
+                    <label for="address">Address</label>
+                    <input type="text" name="address" value="{{ $user->address }}" class="form-control" id="address" placeholder="Enter Address">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="address">Role</label>
+                    <select class="form-control" id="role" name="role">
+                        <option value="">Select Role</option>
+                        @if(!is_null($roles))
+                        @foreach($roles as $role)
+                        @if(in_array($role->id, $roleArr))
+                        <option selected value="{{$role->id}}">{{$role->name}}</option>
+                        @else
+                        <option value="{{$role->id}}">{{$role->name}}</option>
+                        @endif
+                        @endforeach
+                        @endif
+                    </select>
                 </div>
             </div>
         </div>

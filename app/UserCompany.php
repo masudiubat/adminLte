@@ -11,6 +11,7 @@ class UserCompany extends Model
         'name',
         'code_name',
         'email',
+        'country_code',
         'phone',
         'address',
         'logo',

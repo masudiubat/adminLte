@@ -22,7 +22,7 @@
     with font-awesome or any other icon font library -->
             <li class="nav-header">ADMINISTRATIVE TOOLS</li>
             <li class="nav-item">
-                <a href="{{route('user.company')}}" class="{{ request()->routeIs('user.company*') ? 'nav-link active' : 'nav-link' }}">
+                <a href="{{route('company')}}" class="{{ request()->routeIs('company*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-building"></i>
                     <p>Company </p>
                 </a>

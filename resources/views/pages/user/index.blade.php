@@ -285,6 +285,11 @@
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
+            columnDefs: [{
+                orderable: false,
+                targets: [-1]
+            }]
+
             /*"buttons": ["csv", "excel", "pdf", "print"]*/
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $('#example2').DataTable({

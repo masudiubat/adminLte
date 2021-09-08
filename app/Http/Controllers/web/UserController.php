@@ -104,10 +104,7 @@ class UserController extends Controller
         $createUser = $user->save();
 
         if ($createUser) {
-            if ($request->has('role')) {
-                $role = $request->input('role');
-                $user->assignRole($role);
-            }
+            $user->roles()->attach($request->input('role'));
             ActivityLogLib::addLog('User has created a new user successfully.', 'success');
             Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
@@ -137,8 +134,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        $createView = view('pages.user._edit', ['user' => $user])->render();
+        $user = User::with('roles')->findOrFail($id);
+
+        $roleArr = array();
+        foreach ($user->roles as $exRole) {
+            $roleArr[] = $exRole->id;
+        }
+        $codes = CountryCode::all();
+        $roles = Role::all();
+        $createView = view('pages.user._edit', ['roleArr' => $roleArr, 'user' => $user, 'codes' => $codes, 'roles' => $roles])->render();
         return (['editUser' => $createView]);
     }
 
@@ -156,25 +160,21 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required | email | unique:users,email,' . $user->id,
-            'mobile' => 'required | unique:users,mobile,' . $user->id,
+            'country_code' => 'required',
+            'phone' => 'required | unique:users,phone,' . $user->id,
+            'password' => 'required | min:8 | confirmed'
         ], [
-            'name.required' => 'Name field is mandatory field.',
-            'email.required' => 'Email field is mandatory field.',
-            'mobile.required' => 'Mobile number field is mandatory field.',
-            'email.email' => 'Email field must contain a valid email address.',
-            'email.unique' => 'Your given email address is already registered.',
-            'mobile.unique' => 'Your given mobile number is already in used.'
+            'name.required' => 'Woops! Name is missiong.',
+            'country_code.required' => 'Woops! Country code is not selected.',
+            'email.required' => 'Woops! Email is missiong.',
+            'phone.required' => 'Woops! Phone number is missiong.',
+            'email.email' => 'Woops! Wrong email format.',
+            'email.unique' => 'Woops! Given email address is already registered.',
+            'phone.unique' => 'Woops! Given mobile number is already in used.',
+            'password.required' => 'Woops! Password is missiong.',
+            'password.min' => 'Password length must be minimum 8 digits.',
+            'password.confirmed' => 'Woops! Confirmation password are not match.'
         ]);
-
-        // Code for insert profile image
-        $name = $request->input('name');
-        $slug = Str::slug($name);
-        if ($request->has('image')) {
-            $image = $request->file('image');
-            $newImageName = $slug . "_" . $user->id . '.' . $image->getClientOriginalExtension();
-            $destinationPath = 'images/users';
-            $image->move($destinationPath, $newImageName);
-        }
 
         if ($request->has('name')) {
             $user->name = $request->input('name');
@@ -184,25 +184,34 @@ class UserController extends Controller
             $user->email = $request->input('email');
         }
 
-        if ($request->has('mobile')) {
-            $user->mobile = $request->input('mobile');
+        if ($request->has('country_code')) {
+            $user->country_code = $request->input('country_code');
+        }
+
+        if ($request->has('phone')) {
+            $user->phone = $request->input('phone');
         }
 
         if ($request->has('address')) {
             $user->address = $request->input('address');
         }
 
-        if ($request->has('image')) {
-            $user->image = $newImageName;
+        if ($request->has('role')) {
+            $roleName = Role::findOrFail($request->input('role'));
+            $user->role = $roleName->name;
         }
 
-        $user->updated_at = date('Y-m-d');
-        $updateUser = $user->save();
+        $user->password = bcrypt($request->input('password'));
+        $user->created_at = date('Y-m-d');
+        $createUser = $user->save();
 
-        if ($updateUser) {
-            Toastr::success('User info has updated successfully.', 'success');
+        if ($createUser) {
+            $user->roles()->sync($request->input('role'));
+            ActivityLogLib::addLog('User has created a new user successfully.', 'success');
+            Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
         } else {
+            ActivityLogLib::addLog('User creation attempt failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
@@ -227,9 +236,11 @@ class UserController extends Controller
         $userPasswordChagne = $user->save();
 
         if ($userPasswordChagne) {
+            ActivityLogLib::addLog('User has changed password for ' . $user->name . ' successfully.', 'success');
             Toastr::success('User password has changed successfully.', 'success');
             return redirect()->back();
         } else {
+            ActivityLogLib::addLog('User has tried to changed password.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }

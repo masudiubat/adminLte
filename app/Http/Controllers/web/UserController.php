@@ -161,8 +161,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required | email | unique:users,email,' . $user->id,
             'country_code' => 'required',
-            'phone' => 'required | unique:users,phone,' . $user->id,
-            'password' => 'required | min:8 | confirmed'
+            'phone' => 'required | unique:users,phone,' . $user->id
         ], [
             'name.required' => 'Woops! Name is missiong.',
             'country_code.required' => 'Woops! Country code is not selected.',
@@ -170,10 +169,7 @@ class UserController extends Controller
             'phone.required' => 'Woops! Phone number is missiong.',
             'email.email' => 'Woops! Wrong email format.',
             'email.unique' => 'Woops! Given email address is already registered.',
-            'phone.unique' => 'Woops! Given mobile number is already in used.',
-            'password.required' => 'Woops! Password is missiong.',
-            'password.min' => 'Password length must be minimum 8 digits.',
-            'password.confirmed' => 'Woops! Confirmation password are not match.'
+            'phone.unique' => 'Woops! Given mobile number is already in used.'
         ]);
 
         if ($request->has('name')) {
@@ -207,11 +203,11 @@ class UserController extends Controller
 
         if ($createUser) {
             $user->roles()->sync($request->input('role'));
-            ActivityLogLib::addLog('User has created a new user successfully.', 'success');
+            ActivityLogLib::addLog('User has updated ' . $user->name . ' info successfully.', 'success');
             Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
         } else {
-            ActivityLogLib::addLog('User creation attempt failed.', 'error');
+            ActivityLogLib::addLog('User update attempt failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }

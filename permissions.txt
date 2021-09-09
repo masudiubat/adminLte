@@ -1,0 +1,18 @@
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'View user list', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Create new user', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Update user info', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Delete user info', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'User password change', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'View roles and permissions', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Create new role', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'update role', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'delete role', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Access activity log info', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'View researcher skill list', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Insert new skill', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'update skill details', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'delete skill', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'View company list', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'Insert new company info', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'update company info', 'web', '2021-09-08 11:07:26', NULL);
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES (NULL, 'delete company info', 'web', '2021-09-08 11:07:26', NULL);

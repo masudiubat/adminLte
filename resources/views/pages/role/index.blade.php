@@ -42,7 +42,7 @@
                                                 {{ $roles->firstItem() + $key }}. {{ ucwords($role->name) }}
                                             </h4>
                                             <div class="float-right">
-                                                <a onclick="event.preventDefault(); editRole('{{$role->id}}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Role"><i class="fa fa-edit"></i></a>
+                                                <a onclick="event.preventDefault(); editRole('{{$role->id}}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit Role"><i class="fa fa-edit"></i></a>
                                             </div>
                                         </div>
                                     </a>
@@ -188,9 +188,6 @@
                 </table>
             </div>
             <!-- /.card-body -->
-            <div class="card-footer clearfix">
-
-            </div>
             <div class="card-footer clearfix">
                 <ul class="pagination pagination-sm m-0 float-right">
                     {{ $permissions->links() }}
@@ -345,6 +342,120 @@
         <!-- End Modal for permissions to user -->
     </div>
 </div>
+
+<!-- Start new Row -->
+<div class="row">
+    <div class="col-md-6" id="accordion">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">User with Role</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!is_null($userWithAllRoles))
+                        @foreach($userWithAllRoles as $key => $userRole)
+                        @if(!$userRole->roles->isEmpty())
+                        <tr>
+                            <td style="padding: 5px 10px;">{{$key+1}}. &nbsp; {{$userRole->name}}</td>
+                            <td style="padding: 5px 10px;">
+                                @if(!is_null($userRole->roles))
+                                @foreach($userRole->roles as $urole)
+                                {{$urole->name}}
+                                @endforeach
+                                @endif
+                            </td>
+                            <td style="padding: 5px 10px;">
+                                <a onclick="event.preventDefault(); changeUserRole('{{$userRole->id}}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit Role"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        @endif
+                        @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    {{ $userWithAllRoles->links() }}
+                </ul>
+            </div>
+        </div>
+        <!-- /.card -->
+
+        <!-- Start Modal for change user role -->
+        <div class="modal fade" id="changeUserRoleModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Change user role</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card card-primary AddChangeRole">
+
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+        <!-- End Modal for change user role -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <h3 class="card-title">User without Role</h3>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Assign Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!is_null($userWithOutRoles))
+                        @foreach($userWithOutRoles as $key => $userWithoutRole)
+                        <tr>
+                            <td style="padding: 5px 10px;">{{$key+1}}. &nbsp; {{$userWithoutRole->name}}</td>
+
+                            <td style="padding: 5px 10px;">
+                                <a onclick="event.preventDefault(); changeUserRole('{{$userWithoutRole->id}}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Assign Role"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    {{ $userWithOutRoles->links() }}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
@@ -352,6 +463,17 @@
     // edit role modal
     function editRole(id) {
         $('#editRoleModal').modal('show');
+    }
+
+    function changeUserRole(id) {
+        var url = "{{url('/change/user/role')}}/" + id;
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).done(function(data) {
+            $('.AddChangeRole').html(data.changeRole);
+            $('#changeUserRoleModal').modal('show');
+        });
     }
 
     // select all btn activation

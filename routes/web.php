@@ -18,12 +18,12 @@ use Spatie\Permission\Models\Permission;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/console-create', function () {
     //$role = Role::create(['name' => 'super admin']);
-    //$permission = Permission::create(['name' => 'user list view']);
+    //$permission = Permission::create(['name' => 'Show user list']);
     //$role = Role::findOrFail(1);
     //$permission = Permission::findOrFail(1);
     //$role->givePermissionTo($permission);
@@ -43,11 +43,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
+Auth::routes([
+    'register' => false, // Registration Routes..
+]);
 
 /**
- *  User role and priviliges management
+ *  Researcher application related routes
  */
+Route::get('/researcher/application/create', 'web\ResearcherApplicationController@create')->name('researcher.application.create');
+
 Route::group(['middleware' => ['auth']], function () {
     /**
      *  User related routes
@@ -66,6 +70,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/role/privilege/store', 'web\RoleController@privilege_store')->name('role.privilege.store');
     Route::get('/check/role/permissions/{id}', 'web\RoleController@check_permissions')->name('check.role.permissions');
     Route::get('/check/user/direct/permission/{id}', 'web\RoleController@check_direct_permission')->name('check.user.direct.permission');
+    Route::get('/change/user/role/{id}', 'web\RoleController@change_user_role')->name('change.user.role');
+    Route::post('/change/user/role/store/{id}', 'web\RoleController@change_role_store')->name('change.user.role.store');
 
     /**
      * Activity log related routes

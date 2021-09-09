@@ -63,18 +63,17 @@
                     <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
                 </a>
             </div>
-            <!-- /.social-auth-links 
-
+            <!-- /.social-auth-links           
             
-            <p class="mb-0">
-                <a href="register.html" class="text-center">Register a new membership</a>
-            </p>
 -->
             @if (Route::has('password.request'))
             <p class="mb-1">
                 <a href="{{ route('password.request') }}">I forgot my password</a>
             </p>
             @endif
+            <p class="mb-0">
+                <a href="{{route('researcher.application.create')}}" class="text-center">Apply as a Researcher</a>
+            </p>
         </div>
         <!-- /.card-body -->
     </div>

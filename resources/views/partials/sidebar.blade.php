@@ -20,18 +20,24 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
     with font-awesome or any other icon font library -->
+            <li class="nav-header">AUXILIARY TOOLS</li>
+            <li class="nav-item">
+                <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-laptop-house"></i>
+                    <p>Researcher Skills </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('social.media')}}" class="{{ request()->routeIs('social.media*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-hashtag"></i>
+                    <p>Social Media </p>
+                </a>
+            </li>
             <li class="nav-header">ADMINISTRATIVE TOOLS</li>
             <li class="nav-item">
                 <a href="{{route('company')}}" class="{{ request()->routeIs('company*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-building"></i>
                     <p>Company </p>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
-                    <i class="nav-icon fas fa-laptop-house"></i>
-                    <p>Researcher Skills </p>
                 </a>
             </li>
 

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\ResearcherApplication;
 use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
@@ -13,4 +14,9 @@ class Skill extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function researcher_applications()
+    {
+        return $this->belongsToMany(ResearcherApplication::class);
+    }
 }

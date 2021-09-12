@@ -51,6 +51,7 @@ Auth::routes([
  *  Researcher application related routes
  */
 Route::get('/researcher/application/create', 'web\ResearcherApplicationController@create')->name('researcher.application.create');
+Route::post('/researcher/application/store', 'web\ResearcherApplicationController@store')->name('researcher.application.store');
 
 Route::group(['middleware' => ['auth']], function () {
     /**
@@ -95,4 +96,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/company/destroy/{id}', 'web\UserCompanyController@destroy')->name('company.destroy');
     Route::get('/company/edit/{id}', 'web\UserCompanyController@edit')->name('company.edit');
     Route::post('/company/update/{id}', 'web\UserCompanyController@update')->name('company.update');
+
+    /**
+     * Social media relaed routes
+     */
+    Route::get('/social/media', 'web\SocialMediaController@index')->name('social.media');
+    Route::post('/social/media/store', 'web\SocialMediaController@store')->name('social.media.store');
+    Route::get('/social/media/edit/{id}', 'web\SocialMediaController@edit')->name('social.media.edit');
+    Route::post('/social/media/update/{id}', 'web\SocialMediaController@update')->name('social.media.update');
+    Route::delete('/social/media/destroy/{id}', 'web\SocialMediaController@destroy')->name('social.media.destroy');
 });

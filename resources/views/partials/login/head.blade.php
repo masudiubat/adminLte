@@ -11,4 +11,6 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
 <!-- Theme style -->
 <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css')}}">
+<link rel="shortcut icon" href="{{ asset('images/logos/favicon.png')}}" />
 @stack('css')

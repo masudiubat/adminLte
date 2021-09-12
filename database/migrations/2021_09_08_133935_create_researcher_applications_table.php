@@ -17,6 +17,7 @@ class CreateResearcherApplicationsTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('email')->unique();
+            $table->string('country')->nullable();
             $table->string('country_code')->nullable();
             $table->string('phone')->nullable();
             $table->date('date_of_birth')->nullable();
@@ -27,9 +28,8 @@ class CreateResearcherApplicationsTable extends Migration
             $table->string('about')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('photo_identity')->nullable();
-            $table->string('certifications')->nullable();
             $table->string('attachment')->nullable();
-            $table->date('perferred_interview_date')->nullable();
+            $table->date('preferred_interview_date')->nullable();
             $table->tinyInteger('status')->default('1');
             $table->timestamps();
         });

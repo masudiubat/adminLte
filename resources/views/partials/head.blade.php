@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css')}}">
+<link rel="shortcut icon" href="{{ asset('images/logos/favicon.png')}}" />
 <style>
     .modal-header,
     .modal-footer {

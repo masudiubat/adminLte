@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Skill;
 use Illuminate\Database\Eloquent\Model;
 
 class ResearcherApplication extends Model
@@ -10,6 +11,7 @@ class ResearcherApplication extends Model
     protected $fillable = [
         'name',
         'email',
+        'country',
         'country_code',
         'phone',
         'date_of_birth',
@@ -20,11 +22,15 @@ class ResearcherApplication extends Model
         'about',
         'profile_image',
         'photo_identity',
-        'certifications',
         'attachment',
         'preferred_interview_date',
         'status',
         'created_at',
         'updated_at'
     ];
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\CompanyUser;
 use Illuminate\Database\Eloquent\Model;
 
 class UserCompany extends Model
@@ -18,4 +19,9 @@ class UserCompany extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function company_users()
+    {
+        return $this->hasMany(CompanyUser::class);
+    }
 }

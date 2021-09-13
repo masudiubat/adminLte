@@ -39,13 +39,9 @@ Route::get('/console-create', function () {
     } */
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes([
-    'register' => false, // Registration Routes..
-]);
 
 /**
  *  Researcher application related routes
@@ -63,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/update/{id}', 'web\UserController@update')->name('user.update');
     Route::post('/user/password/change/{id}', 'web\UserController@change_user_password')->name('user.password.change');
 
+    Route::get('/personal/profile/detail/{id}', 'web\PersonalProfileController@show')->name('personal.profile.detail');
     /**
      *  Roles and Permissions related routes
      */
@@ -105,4 +102,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/social/media/edit/{id}', 'web\SocialMediaController@edit')->name('social.media.edit');
     Route::post('/social/media/update/{id}', 'web\SocialMediaController@update')->name('social.media.update');
     Route::delete('/social/media/destroy/{id}', 'web\SocialMediaController@destroy')->name('social.media.destroy');
+
+    /**
+     * Assign user to comapny related routes
+     */
+    Route::get('/assign/company/user', 'web\CompanyUserController@index')->name('assign.company.user');
+    Route::post('/assign/company/user/store', 'web\CompanyUserController@store')->name('assign.company.user.store');
+    Route::get('/assign/company/user/edit/{id}', 'web\CompanyUserController@edit')->name('assign.company.user.edit');
+    Route::delete('/assign/company/user/destroy/{id}', 'web\CompanyUserController@destroy')->name('assign.company.user.destroy');
 });

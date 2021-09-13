@@ -27,6 +27,7 @@
                     <p>Researcher Skills </p>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a href="{{route('social.media')}}" class="{{ request()->routeIs('social.media*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-hashtag"></i>
@@ -35,16 +36,21 @@
             </li>
             <li class="nav-header">ADMINISTRATIVE TOOLS</li>
             <li class="nav-item">
+                <a href="{{route('user.index')}}" class="{{ request()->routeIs('user*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>Admin User </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{route('company')}}" class="{{ request()->routeIs('company*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-building"></i>
                     <p>Company </p>
                 </a>
             </li>
-
             <li class="nav-item">
-                <a href="{{route('user.index')}}" class="{{ request()->routeIs('user*') ? 'nav-link active' : 'nav-link' }}">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>Admin User </p>
+                <a href="{{route('assign.company.user')}}" class="{{ request()->routeIs('assign.company*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-puzzle-piece"></i>
+                    <p>Assign User to Company</p>
                 </a>
             </li>
             <li class="nav-item">
@@ -59,6 +65,39 @@
                     <p>Roles & Permissions </p>
                 </a>
             </li>
+
+
+            <li class="{{ request()->routeIs('personal.profile*') ? 'nav-item menu-open' : 'nav-item' }}">
+                <a href="#" class="{{ request()->routeIs('personal.profile*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-user-cog"></i>
+                    <p>
+                        My Profile
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{route('personal.profile.detail', Auth::user()->id) }}" class="{{ request()->routeIs('personal.profile.detail') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Profile</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/mailbox/compose.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Compose</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Read</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
             <li class="nav-item">
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
                     <i class="nav-icon fa fa-power-off"></i>

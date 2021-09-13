@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+<!-- Select2 -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 @endpush
 @section('breadcrumb')
 <li class="breadcrumb-item active">Users</li>
@@ -115,11 +118,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="mobile">Select Country Code <code>*</code></label>
-                                                <select class="form-control" name="country_code">
+                                                <select class="form-control select2bs4" name="country_code">
                                                     <option value="">Select Country Code</option>
                                                     @if(!is_null($codes))
                                                     @foreach($codes as $code)
-                                                    <option value="{{$code->code}}">{{$code->country}} ({{$code->code}})</option>
+                                                    <option value="{{$code->id}}">{{$code->country}} ({{$code->code}})</option>
                                                     @endforeach
                                                     @endif
                                                 </select>
@@ -152,23 +155,6 @@
                                                     @endforeach
                                                     @endif
                                                 </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="password">Password <code>*</code></label>
-                                                <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
-                                                <span class="text-danger">{{ $errors->first('password') }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="password-confirm">Confirm Password <code>*</code></label>
-                                                <input type="password" name="password_confirmation" class="form-control" id="password-confirm" placeholder="Re-enter Password" required>
-                                                <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -278,9 +264,18 @@
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-
+<!-- Select2 -->
+<script src="{{ asset('assets/plugins/select2/js/select2.full.min.js')}}"></script>
 <script>
     $(function() {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
         $("#example1").DataTable({
             "responsive": true,
             "lengthChange": false,

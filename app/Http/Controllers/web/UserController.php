@@ -6,10 +6,14 @@ use App\User;
 use App\CountryCode;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Library\ActivityLogLib;
+use App\Mail\UserCredentialsMail;
+use App\Mail\AccountVerificationMail;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
-use App\Library\ActivityLogLib;
+use Illuminate\Support\Facades\Mail;
+
 
 class UserController extends Controller
 {
@@ -40,7 +44,6 @@ class UserController extends Controller
             'email' => 'required | email | unique:users',
             'country_code' => 'required',
             'phone' => 'required | unique:users',
-            'password' => 'required | min:8 | confirmed'
         ], [
             'name.required' => 'Woops! Name is missiong.',
             'country_code.required' => 'Woops! Country code is not selected.',
@@ -49,9 +52,6 @@ class UserController extends Controller
             'email.email' => 'Woops! Wrong email format.',
             'email.unique' => 'Woops! Given email address is already registered.',
             'phone.unique' => 'Woops! Given mobile number is already in used.',
-            'password.required' => 'Woops! Password is missiong.',
-            'password.min' => 'Password length must be minimum 8 digits.',
-            'password.confirmed' => 'Woops! Confirmation password are not match.'
         ]);
 
         // Code for insert profile image
@@ -83,7 +83,9 @@ class UserController extends Controller
         }
 
         if ($request->has('country_code')) {
-            $user->country_code = $request->input('country_code');
+            $country = CountryCode::findOrFail($request->input('country_code'));
+            $user->country_code = $country->code;
+            $user->country = $country->country;
         }
 
         if ($request->has('phone')) {
@@ -98,13 +100,32 @@ class UserController extends Controller
             $roleName = Role::findOrFail($request->input('role'));
             $user->role = $roleName->name;
         }
-
-        $user->password = bcrypt($request->input('password'));
+        $password = Str::random(8);
+        $user->password = bcrypt($password);
         $user->created_at = date('Y-m-d');
         $createUser = $user->save();
 
         if ($createUser) {
             $user->roles()->attach($request->input('role'));
+            // Send email to user with login credentials
+            $myEmail = $user->email;
+            $details = [
+                'title' => 'Your beetles site access password',
+                'url' => 'http://127.0.0.1:8000',
+                'password' => $password
+            ];
+
+            Mail::to($myEmail)->send(new UserCredentialsMail($details));
+
+            // Send email to user for email verification            
+            $verificationDetails = [
+                'title' => 'Your beetles site activitation link',
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_id' => $user->id,
+                'token' => sha1(time())
+            ];
+            Mail::to($myEmail)->send(new AccountVerificationMail($verificationDetails));
             ActivityLogLib::addLog('User has created a new user successfully.', 'success');
             Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
@@ -181,7 +202,9 @@ class UserController extends Controller
         }
 
         if ($request->has('country_code')) {
-            $user->country_code = $request->input('country_code');
+            $country = CountryCode::findOrFail($request->input('country_code'));
+            $user->country_code = $country->code;
+            $user->country = $country->country;
         }
 
         if ($request->has('phone')) {
@@ -196,8 +219,8 @@ class UserController extends Controller
             $roleName = Role::findOrFail($request->input('role'));
             $user->role = $roleName->name;
         }
-
-        $user->password = bcrypt($request->input('password'));
+        $password = Str::random(8);
+        $user->password = bcrypt($password);
         $user->created_at = date('Y-m-d');
         $createUser = $user->save();
 

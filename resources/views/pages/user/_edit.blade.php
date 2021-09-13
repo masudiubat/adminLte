@@ -1,3 +1,6 @@
+<!-- Select2 -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 <!-- form start -->
 <form action="{{route('user.update', $user->id)}}" method="POST" enctype="multipart/form-data">
     @csrf
@@ -23,7 +26,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="address">Country Code</label>
-                    <select class="form-control" name="country_code">
+                    <select class="form-control select2bs4" name="country_code">
                         <option value="">Select Country Code</option>
                         @if(!is_null($codes))
                         @foreach($codes as $code)
@@ -74,8 +77,19 @@
         <div class="float-right text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
     </div>
 </form>
-
+<!-- Select2 -->
+<script src="{{ asset('assets/plugins/select2/js/select2.full.min.js')}}"></script>
 <script>
+    $(function() {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+    });
+
     var loadFile = function(event) {
         var outputForUpdate = document.getElementById('outputForUpdate');
         outputForUpdate.src = URL.createObjectURL(event.target.files[0]);

@@ -290,11 +290,6 @@
                                     <span class="fas fa-globe"><span class="text-danger"> * </span></span>
                                 </div>
                             </div>
-                            @error('skill')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
                         </div>
                     </div>
                     <div class="col-6">
@@ -319,7 +314,7 @@
                     </div>
                     <!-- /.col -->
                     <div class="col-2">
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-block">Apply</button>
                     </div>
                     <!-- /.col -->
                 </div>

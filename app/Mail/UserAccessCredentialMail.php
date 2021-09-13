@@ -7,18 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountVerificationMail extends Mailable
+class UserAccessCredentialMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $verificationDetails;
+    public $details;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($verificationDetails)
+    public function __construct($details)
     {
-        $this->verificationDetails = $verificationDetails;
+        $this->details = $details;
     }
 
     /**
@@ -28,6 +28,6 @@ class AccountVerificationMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.AccountVerification')->with('verificationDetails', $this->verificationDetails);
+        return $this->markdown('emails.UserAccessCredential')->with('details', $this->details);
     }
 }

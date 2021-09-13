@@ -12,6 +12,16 @@
 <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css')}}">
 <link rel="shortcut icon" href="{{ asset('images/logos/favicon.png')}}" />
+<script>
+    @if($errors -> any())
+    @foreach($errors -> all() as $error)
+    toastr.error('{{ $error }}', 'Error', {
+        "closeButton": true,
+        "progressBar": true
+    });
+    @endforeach
+    @endif
+</script>
 <style>
     .modal-header,
     .modal-footer {

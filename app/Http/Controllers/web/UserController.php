@@ -7,12 +7,12 @@ use App\CountryCode;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Library\ActivityLogLib;
-use App\Mail\UserCredentialsMail;
-use App\Mail\AccountVerificationMail;
+use App\Mail\UserVerificationMail;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\UserAccessCredentialMail;
 
 
 class UserController extends Controller
@@ -107,25 +107,20 @@ class UserController extends Controller
 
         if ($createUser) {
             $user->roles()->attach($request->input('role'));
-            // Send email to user with login credentials
+            // Send email for user credentials
             $myEmail = $user->email;
             $details = [
-                'title' => 'Your beetles site access password',
+                'title' => 'Your beetles account details.',
                 'url' => 'http://127.0.0.1:8000',
-                'password' => $password
-            ];
-
-            Mail::to($myEmail)->send(new UserCredentialsMail($details));
-
-            // Send email to user for email verification            
-            $verificationDetails = [
-                'title' => 'Your beetles site activitation link',
+                'password' => $password,
                 'name' => $user->name,
-                'email' => $user->email,
-                'user_id' => $user->id,
-                'token' => sha1(time())
+                'email' => $user->email
             ];
-            Mail::to($myEmail)->send(new AccountVerificationMail($verificationDetails));
+            Mail::to($myEmail)->send(new UserAccessCredentialMail($details));
+
+            // Send email to verification user account
+            $user->sendEmailVerificationNotification();
+
             ActivityLogLib::addLog('User has created a new user successfully.', 'success');
             Toastr::success('New user has created successfully.', 'success');
             return redirect()->back();
@@ -177,7 +172,9 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-
+        $verificationUrl = 'email/verify/' . $user->id . "/" . sha1(time());
+        echo $verificationUrl;
+        die();
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required | email | unique:users,email,' . $user->id,

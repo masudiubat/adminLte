@@ -39,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
+                        @foreach($users->reverse() as $user)
                         <tr>
                             <td>
                                 @if($user->image != null)
@@ -151,7 +151,7 @@
                                                     <option value="">Select Role</option>
                                                     @if(!is_null($roles))
                                                     @foreach($roles as $role)
-                                                    <option value="{{$role->id}}">{{$role->name}}</option>
+                                                    <option value="{{$role->id}}">{{ucfirst($role->name)}}</option>
                                                     @endforeach
                                                     @endif
                                                 </select>

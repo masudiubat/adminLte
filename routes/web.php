@@ -86,13 +86,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/researcher/skill/destroy/{id}', 'web\ResearcherSkillController@destroy')->name('researcher.skill.destroy');
 
     /**
-     * Company reladed routes
+     * Organization reladed routes
      */
-    Route::get('/company', 'web\UserCompanyController@index')->name('company');
-    Route::post('/company/store', 'web\UserCompanyController@store')->name('company.store');
-    Route::delete('/company/destroy/{id}', 'web\UserCompanyController@destroy')->name('company.destroy');
-    Route::get('/company/edit/{id}', 'web\UserCompanyController@edit')->name('company.edit');
-    Route::post('/company/update/{id}', 'web\UserCompanyController@update')->name('company.update');
+    Route::get('/organization', 'web\OrganizationController@index')->name('organization');
+    Route::post('/organization/store', 'web\OrganizationController@store')->name('organization.store');
+    Route::delete('/organization/destroy/{id}', 'web\OrganizationController@destroy')->name('organization.destroy');
+    Route::get('/organization/edit/{id}', 'web\OrganizationController@edit')->name('organization.edit');
+    Route::post('/organization/update/{id}', 'web\OrganizationController@update')->name('organization.update');
+
 
     /**
      * Social media relaed routes
@@ -104,10 +105,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/social/media/destroy/{id}', 'web\SocialMediaController@destroy')->name('social.media.destroy');
 
     /**
-     * Assign user to comapny related routes
+     * Assign user to organization related routes
      */
-    Route::get('/assign/company/user', 'web\CompanyUserController@index')->name('assign.company.user');
-    Route::post('/assign/company/user/store', 'web\CompanyUserController@store')->name('assign.company.user.store');
-    Route::get('/assign/company/user/edit/{id}', 'web\CompanyUserController@edit')->name('assign.company.user.edit');
-    Route::delete('/assign/company/user/destroy/{id}', 'web\CompanyUserController@destroy')->name('assign.company.user.destroy');
+    Route::get('/assign/organization/member', 'web\OrganizationMemberController@index')->name('assign.organization.member');
+    Route::post('/assign/organization/member/store', 'web\OrganizationMemberController@store')->name('assign.organization.member.store');
+    Route::get('/assign/organization/member/edit/{id}', 'web\OrganizationMemberController@edit')->name('assign.organization.member.edit');
+    Route::post('/assign/organization/member/update/{id}', 'web\OrganizationMemberController@update')->name('assign.organization.member.update');
+    Route::delete('/assign/organization/member/destroy/{id}', 'web\OrganizationMemberController@destroy')->name('assign.organization.member.destroy');
+
+    Route::get('/admin/project', 'web\ProjectController@index')->name('admin.project')->middleware(['role:admin']);
+    Route::get('/admin/project/create', 'web\ProjectController@create')->name('admin.project.create')->middleware(['role:admin']);
+    Route::get('/organization/project/', 'web\OrganizationProjectController@index')->name('organization.project')->middleware(['role:admin|client']);
+    Route::get('/organization/project/create', 'web\OrganizationProjectController@create')->name('organization.project.create')->middleware(['role:admin|client']);
 });

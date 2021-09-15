@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Assign User to Company')
+@section('title', 'Organization Member')
 
 @push('css')
 <!-- DataTables -->
@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Assign User to Company</li>
+<li class="breadcrumb-item active">Organization Member</li>
 @endsection
 
 @section('content')
@@ -17,7 +17,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Assign User to Company</h3>
+                <h3 class="card-title">Organization Member</h3>
                 <div class="add-user-btn float-right" style="width:20%">
                     <button type="button" class="btn btn-block btn-outline-success" data-toggle="modal" data-target="#NewAssignModal">New Assign</button>
                 </div>
@@ -28,7 +28,7 @@
                     <thead>
                         <tr>
                             <th>Sl.</th>
-                            <th>Company Name</th>
+                            <th>Organization Name</th>
                             <th>Person Name</th>
                             <th>Designation</th>
                             <th>Position</th>
@@ -39,15 +39,15 @@
                         @foreach($assignUsers->reverse() as $key => $assignUser)
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td>@if(!is_null($assignUser->user_company)){{ $assignUser->user_company->name }}@endif</td>
+                            <td>@if(!is_null($assignUser->organization)){{ $assignUser->organization->name }}@endif</td>
                             <td>@if(!is_null($assignUser->user)){{ $assignUser->user->name }}@endif</td>
                             <td>{{$assignUser->designation}}</td>
                             <td>{{$assignUser->role}}</td>
                             <td>
-                                <a onclick="event.preventDefault(); editCompanyUser('{{ $assignUser->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
-                                <a href="#" onclick="event.preventDefault(); deleteCompanyUser('{{$assignUser->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                                <a onclick="event.preventDefault(); editOrganizationMember('{{ $assignUser->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                <a href="#" onclick="event.preventDefault(); deleteOrganizationMember('{{$assignUser->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
-                                <form id="delete-company-user-{{ $assignUser->id }}" action="{{route('assign.company.user.destroy', $assignUser->id)}}" method="POST" style="display: none;">
+                                <form id="delete-organization-member-{{ $assignUser->id }}" action="{{route('assign.organization.member.destroy', $assignUser->id)}}" method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -58,7 +58,7 @@
                     <tfoot>
                         <tr>
                             <th>Sl.</th>
-                            <th>Company Name</th>
+                            <th>Organization Name</th>
                             <th>Person Name</th>
                             <th>Designation</th>
                             <th>Position</th>
@@ -83,20 +83,20 @@
                     <div class="modal-body">
                         <div class="card card-primary">
                             <!-- form start -->
-                            <form id="newAssignForm" action="{{route('assign.company.user.store')}}" method="POST" enctype="multipart/form-data">
+                            <form id="newAssignForm" action="{{route('assign.organization.member.store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="name">Select Company <code>*</code></label>
-                                        <select name="company" class="form-control">
-                                            <option value="">Select Company</option>
-                                            @if(!is_null($companies))
-                                            @foreach($companies as $company)
-                                            <option value="{{$company->id}}">{{$company->name}}</option>
+                                        <label for="name">Select Organization <code>*</code></label>
+                                        <select name="organization" class="form-control">
+                                            <option value="">Select Organization</option>
+                                            @if(!is_null($organizations))
+                                            @foreach($organizations as $organization)
+                                            <option value="{{$organization->id}}">{{$organization->name}}</option>
                                             @endforeach
                                             @endif
                                         </select>
-                                        <span class="text-danger">{{ $errors->first('company') }}</span>
+                                        <span class="text-danger">{{ $errors->first('organizations') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Select User <code>*</code></label>
@@ -140,11 +140,11 @@
         <!-- /.modal -->
         <!-- End Modal for create new skill -->
         <!-- Start Modal for update skill -->
-        <div class="modal fade" id="editCompanyUserModal">
+        <div class="modal fade" id="editOrganizationMemberModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Update Assign User to Company</h4>
+                        <h4 class="modal-title">Update Organization Member</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -213,19 +213,19 @@
 </script>
 
 <script>
-    function editCompanyUser(id) {
-        var url = "{{url('/assign/company/user/edit')}}/" + id;
+    function editOrganizationMember(id) {
+        var url = "{{url('/assign/organization/member/edit')}}/" + id;
         $.ajax({
             url: url,
             method: "GET",
         }).done(function(data) {
-            $('.AddEditForm').html(data.editCompanyUser);
-            $('#editCompanyUserModal').modal('show');
+            $('.AddEditForm').html(data.editOrganizationMember);
+            $('#editOrganizationMemberModal').modal('show');
         });
     }
 
     // Function for delete Customer...
-    function deleteSkill(id) {
+    function deleteOrganizationMember(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -236,7 +236,7 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-skill-' + id).submit();
+                document.getElementById('delete-organization-member-' + id).submit();
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel

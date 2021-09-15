@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'User Company')
+@section('title', 'Organization')
 
 @push('css')
 <!-- DataTables -->
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">User Company</li>
+<li class="breadcrumb-item active">Organization</li>
 @endsection
 
 @section('content')
@@ -20,9 +20,9 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">User Company</h3>
+                <h3 class="card-title">Organization</h3>
                 <div class="add-user-btn float-right" style="width:20%">
-                    <button type="button" class="btn btn-block btn-outline-success" data-toggle="modal" data-target="#NewCompanyModal">New Company</button>
+                    <button type="button" class="btn btn-block btn-outline-success" data-toggle="modal" data-target="#NewCompanyModal">New Organization</button>
                 </div>
             </div>
             <!-- /.card-header -->
@@ -40,22 +40,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($companies->reverse() as $key => $company)
+                        @foreach($organizations->reverse() as $key => $organization)
                         <tr>
-                            <td><a onclick="event.preventDefault(); editCompany('{{ $company->id }}');" href="#" data-toggle="tooltip" data-placement="top" title="Edit">{{ $company->name }}</a></td>
-                            <td>{{ $company->code_name }}</td>
-                            <td>{{ $company->email }}</td>
-                            <td>{{ $company->country_code }}{{ $company->phone }}</td>
-                            <td>{{ $company->address }}</td>
+                            <td><a onclick="event.preventDefault(); editCompany('{{ $organization->id }}');" href="#" data-toggle="tooltip" data-placement="top" title="Edit">{{ $organization->name }}</a></td>
+                            <td>{{ $organization->code_name }}</td>
+                            <td>{{ $organization->email }}</td>
+                            <td>{{ $organization->country_code }}{{ $organization->phone }}</td>
+                            <td>{{ $organization->address }}</td>
                             <td>
-                                @if(!is_null($company->logo))
-                                <img class="img-fluid" src="{{ asset('images/company/logos/'. $company->logo)}}" alt="Photo" height="120px" width="90px">
+                                @if(!is_null($organization->logo))
+                                <img class="img-fluid" src="{{ asset('images/organization/logos/'. $organization->logo)}}" alt="Photo" height="120px" width="90px">
                                 @endif
                             </td>
                             <td>
-                                <a href="#" onclick="event.preventDefault(); deleteCompany('{{$company->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                                <a href="#" onclick="event.preventDefault(); deleteCompany('{{$organization->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
-                                <form id="delete-company-{{ $company->id }}" action="{{route('company.destroy', $company->id)}}" method="POST" style="display: none;">
+                                <form id="delete-organization-{{ $organization->id }}" action="{{route('organization.destroy', $organization->id)}}" method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -84,7 +84,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">New Company</h4>
+                        <h4 class="modal-title">New Organization</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -92,13 +92,13 @@
                     <div class="modal-body">
                         <div class="card card-primary">
                             <!-- form start -->
-                            <form id="newSkillForm" action="{{route('company.store')}}" method="POST" enctype="multipart/form-data">
+                            <form id="newSkillForm" action="{{route('organization.store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="name">Company Name <code>*</code></label>
+                                                <label for="name">Organization Name <code>*</code></label>
                                                 <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name" required>
                                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                                             </div>
@@ -155,7 +155,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="custom-file-input">Company Logo</label>
+                                                <label for="custom-file-input">Organization Logo</label>
                                                 <div class="input-group">
                                                     <div class="custom-file">
                                                         <input type="file" name="image" class="custom-file-input" id="image" accept="image/*" onchange="loadFile(event)">
@@ -194,7 +194,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Update Company</h4>
+                        <h4 class="modal-title">Update Organization</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -274,7 +274,7 @@
 
 <script>
     function editCompany(id) {
-        var url = "{{url('/company/edit')}}/" + id;
+        var url = "{{url('/organization/edit')}}/" + id;
         $.ajax({
             url: url,
             method: "GET",
@@ -296,7 +296,7 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-company-' + id).submit();
+                document.getElementById('delete-organization-' + id).submit();
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel

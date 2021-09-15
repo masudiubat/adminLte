@@ -1,18 +1,18 @@
 <!-- form start -->
-<form id="newAssignForm" action="{{route('assign.company.user.store')}}" method="POST" enctype="multipart/form-data">
+<form id="newAssignForm" action="{{route('assign.organization.member.update', $organizationmember->id)}}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="card-body">
         <div class="form-group">
-            <label for="name">Select Company <code>*</code></label>
-            <select name="company" class="form-control">
-                <option value="">Select Company</option>
-                @if(!is_null($companies))
-                @foreach($companies as $company)
-                <option value="{{$company->id}}" {{ $companyUser->user_company_id == $company->id ? "selected" : "" }}>{{$company->name}}</option>
+            <label for="name">Select Organization <code>*</code></label>
+            <select name="organization" class="form-control">
+                <option value="">Select Organization</option>
+                @if(!is_null($organizations))
+                @foreach($organizations as $organization)
+                <option value="{{$organization->id}}" {{ $organizationmember->organization_id == $organization->id ? "selected" : "" }}>{{$organization->name}}</option>
                 @endforeach
                 @endif
             </select>
-            <span class="text-danger">{{ $errors->first('company') }}</span>
+            <span class="text-danger">{{ $errors->first('organization') }}</span>
         </div>
         <div class="form-group">
             <label for="name">Select User <code>*</code></label>
@@ -20,7 +20,7 @@
                 <option value="">Select User</option>
                 @if(!is_null($users))
                 @foreach($users as $user)
-                <option value="{{$user->id}}" {{ $companyUser->user_id == $user->id ? "selected" : "" }}>{{$user->name}}</option>
+                <option value="{{$user->id}}" {{ $organizationmember->user_id == $user->id ? "selected" : "" }}>{{$user->name}}</option>
                 @endforeach
                 @endif
             </select>
@@ -28,12 +28,12 @@
         </div>
         <div class="form-group">
             <label for="name">Official Designation</label>
-            <input type="text" name="designation" class="form-control" value="{{ $companyUser->designation }}" id="designation" placeholder="Enter Official Designation">
+            <input type="text" name="designation" class="form-control" value="{{ $organizationmember->designation }}" id="designation" placeholder="Enter Official Designation">
             <span class="text-danger">{{ $errors->first('designation') }}</span>
         </div>
         <div class="form-group">
             <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox" id="customCheckbox2" name="leading_person" value="1" {{ $companyUser->is_leading_person == 1 ? "checked" : ""}}>
+                <input class="custom-control-input" type="checkbox" id="customCheckbox2" name="leading_person" value="1" {{ $organizationmember->is_leading_person == 1 ? "checked" : ""}}>
                 <label for="customCheckbox2" class="custom-control-label">Is Leading Person</label>
             </div>
             <span class="text-danger">{{ $errors->first('leading_person') }}</span>

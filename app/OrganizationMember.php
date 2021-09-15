@@ -3,14 +3,13 @@
 namespace App;
 
 use App\User;
-use App\UserCompany;
+use App\Organization;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanyUser extends Model
+class OrganizationMember extends Model
 {
-    public $timestamps = false;
     protected $fillable = [
-        'user_company_id',
+        'organization_id',
         'user_id',
         'designation',
         'is_leading_person',
@@ -18,9 +17,9 @@ class CompanyUser extends Model
         'updated_at'
     ];
 
-    public function user_company()
+    public function organization()
     {
-        return $this->belongsTo(UserCompany::class);
+        return $this->belongsTo(Organization::class);
     }
 
     public function user()

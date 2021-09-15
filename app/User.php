@@ -3,13 +3,13 @@
 namespace App;
 
 use App\Customer;
-use App\CompanyUser;
+use App\OrganizationMember;
+use App\Mail\UserVerificationEmail;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Mail\UserVerificationEmail;
-use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -57,8 +57,8 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new Notifications\UserVerificationEmail);
     }
 
-    public function company_users()
+    public function organization_member()
     {
-        return $this->hasMany(CompanyUser::class);
+        return $this->hasMany(OrganizationMember::class);
     }
 }

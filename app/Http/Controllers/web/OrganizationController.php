@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\web;
 
 use App\CountryCode;
-use App\UserCompany;
+use App\Organization;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Library\ActivityLogLib;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 
-class UserCompanyController extends Controller
+class OrganizationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +19,10 @@ class UserCompanyController extends Controller
      */
     public function index()
     {
-        $companies = UserCompany::all();
+        $organizations = Organization::all();
         $phoneCodes = CountryCode::all();
-        ActivityLogLib::addLog('User has viewed company list successfully.', 'success');
-        return view('pages.company.index', ['companies' => $companies, 'phoneCodes' => $phoneCodes]);
+        ActivityLogLib::addLog('User has viewed organization list successfully.', 'success');
+        return view('pages.organization.index', ['organizations' => $organizations, 'phoneCodes' => $phoneCodes]);
     }
 
     /**
@@ -34,8 +34,8 @@ class UserCompanyController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required | unique:user_companies',
-            'email' => 'required | email | unique:user_companies'
+            'name' => 'required | unique:organizations',
+            'email' => 'required | email | unique:organizations'
         ], [
             'name.required' => 'Company name is required.',
             'name.unique' => 'Company name is already registered',
@@ -47,7 +47,7 @@ class UserCompanyController extends Controller
         // Code for insert profile image
         $name = $request->input('name');
         $slug = Str::slug($name);
-        $lastId = UserCompany::select('id')->orderBy('id', 'DESC')->first();
+        $lastId = Organization::select('id')->orderBy('id', 'DESC')->first();
         if ($request->has('image')) {
             $image = $request->file('image');
             if (!is_null($lastId)) {
@@ -56,64 +56,54 @@ class UserCompanyController extends Controller
             } else {
                 $newImageName = $slug . "_1" . '.' . $image->getClientOriginalExtension();
             }
-            $destinationPath = 'images/company/logos';
+            $destinationPath = 'images/organization/logos';
             $image->move($destinationPath, $newImageName);
         }
 
-        $company = new UserCompany();
+        $organization = new Organization();
 
         if ($request->has('name')) {
-            $company->name = $request->input('name');
+            $organization->name = $request->input('name');
         }
 
         if ($request->has('code_name')) {
-            $company->code_name = $request->input('code_name');
+            $organization->code_name = $request->input('code_name');
         }
 
         if ($request->has('email')) {
-            $company->email = $request->input('email');
+            $organization->email = $request->input('email');
         }
 
         if ($request->has('country_code')) {
-            $company->country_code = $request->input('country_code');
+            $organization->country_code = $request->input('country_code');
         }
 
         if ($request->has('phone')) {
-            $company->phone = $request->input('phone');
+            $organization->phone = $request->input('phone');
         }
 
         if ($request->has('address')) {
-            $company->address = $request->input('address');
+            $organization->address = $request->input('address');
         }
 
         if ($request->has('image')) {
-            $company->logo = $newImageName;
+            $organization->logo = $newImageName;
         }
 
-        $company->created_at = date('Y-m-d');
-        $storeCompany = $company->save();
+        $organization->created_at = date('Y-m-d');
 
-        if ($storeCompany) {
-            ActivityLogLib::addLog('User has created a new company named ' . $company->name . ' successfully.', 'success');
-            Toastr::success('New company named ' . $company->name . ' has created successfully.', 'success');
+        $storeOrganization = $organization->save();
+
+        if ($storeOrganization) {
+            ActivityLogLib::addLog('User has created a new organization named ' . $organization->name . ' successfully.', 'success');
+            Toastr::success('New company named ' . $organization->name . ' has created successfully.', 'success');
             return redirect()->back();
         } else {
-            ActivityLogLib::addLog('User has tried to create new company but failed.', 'error');
+            ActivityLogLib::addLog('User has tried to create new organization but failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -122,9 +112,9 @@ class UserCompanyController extends Controller
      */
     public function edit($id)
     {
-        $company = UserCompany::findOrFail($id);
+        $organization = Organization::findOrFail($id);
         $phoneCodes = CountryCode::all();
-        $createView = view('pages.company._edit', ['company' => $company, 'phoneCodes' => $phoneCodes])->render();
+        $createView = view('pages.organization._edit', ['organization' => $organization, 'phoneCodes' => $phoneCodes])->render();
         return (['editCompany' => $createView]);
     }
 
@@ -137,10 +127,10 @@ class UserCompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $company = UserCompany::findOrFail($id);
+        $organization = Organization::findOrFail($id);
         $this->validate($request, [
-            'name' => 'required | unique:user_companies,name,' . $company->id,
-            'email' => 'required | email | unique:user_companies,email,' . $company->id
+            'name' => 'required | unique:organizations,name,' . $organization->id,
+            'email' => 'required | email | unique:organizations,email,' . $organization->id
         ], [
             'name.required' => 'Company name is required.',
             'name.unique' => 'Company name is already registered',
@@ -154,48 +144,48 @@ class UserCompanyController extends Controller
         $slug = Str::slug($name);
         if ($request->has('image')) {
             $image = $request->file('image');
-            $newImageName = $slug . "_" . $company->id . '.' . $image->getClientOriginalExtension();
-            $destinationPath = 'images/company/logos';
+            $newImageName = $slug . "_" . $organization->id . '.' . $image->getClientOriginalExtension();
+            $destinationPath = 'images/organization/logos';
             $image->move($destinationPath, $newImageName);
         }
 
         if ($request->has('name')) {
-            $company->name = $request->input('name');
+            $organization->name = $request->input('name');
         }
 
         if ($request->has('code_name')) {
-            $company->code_name = $request->input('code_name');
+            $organization->code_name = $request->input('code_name');
         }
 
         if ($request->has('email')) {
-            $company->email = $request->input('email');
+            $organization->email = $request->input('email');
         }
 
         if ($request->has('country_code')) {
-            $company->country_code = $request->input('country_code');
+            $organization->country_code = $request->input('country_code');
         }
 
         if ($request->has('phone')) {
-            $company->phone = $request->input('phone');
+            $organization->phone = $request->input('phone');
         }
 
         if ($request->has('address')) {
-            $company->address = $request->input('address');
+            $organization->address = $request->input('address');
         }
 
         if ($request->has('image')) {
-            $company->logo = $newImageName;
+            $organization->logo = $newImageName;
         }
 
-        $company->updated_at = date('Y-m-d');
-        $updateCompany = $company->save();
+        $organization->updated_at = date('Y-m-d');
+        $updateOrganization = $organization->save();
 
-        if ($updateCompany) {
-            ActivityLogLib::addLog('User has updated company info named ' . $company->name . ' successfully.', 'success');
-            Toastr::success('Company info named ' . $company->name . ' has updated successfully.', 'success');
+        if ($updateOrganization) {
+            ActivityLogLib::addLog('User has updated organization info named ' . $organization->name . ' successfully.', 'success');
+            Toastr::success('Organization info named ' . $organization->name . ' has updated successfully.', 'success');
             return redirect()->back();
         } else {
-            ActivityLogLib::addLog('User has tried to update comapny info named' . $company->name . ' but failed.', 'error');
+            ActivityLogLib::addLog('User has tried to update organization info named' . $organization->name . ' but failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
@@ -209,16 +199,16 @@ class UserCompanyController extends Controller
      */
     public function destroy($id)
     {
-        $company = UserCompany::with('roles')->findOrFail($id);
-        $companyName = $company->name;
-        $delete = $company->delete();
+        $organization = Organization::with('roles')->findOrFail($id);
+        $companyName = $organization->name;
+        $delete = $organization->delete();
 
         if ($delete) {
-            ActivityLogLib::addLog('User has deleted company named ' . $companyName . ' successfully.', 'success');
-            Toastr::success('Company has deleted successfully.', 'success');
+            ActivityLogLib::addLog('User has deleted organization named ' . $companyName . ' successfully.', 'success');
+            Toastr::success('Organization has deleted successfully.', 'success');
             return redirect()->back();
         } else {
-            ActivityLogLib::addLog('User has tried to delete' . $companyName . ' company but failed.', 'error');
+            ActivityLogLib::addLog('User has tried to delete' . $companyName . ' organization but failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }

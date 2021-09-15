@@ -1,19 +1,19 @@
 <!-- form start -->
-<form id="newSkillForm" action="{{route('company.update', $company->id)}}" method="POST" enctype="multipart/form-data">
+<form id="newSkillForm" action="{{route('organization.update', $organization->id)}}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="card-body" style="padding:.5rem">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="name">Company Name <code>*</code></label>
-                    <input type="text" name="name" class="form-control" id="name" value="{{ $company->name }}" required>
+                    <label for="name">Organization Name <code>*</code></label>
+                    <input type="text" name="name" class="form-control" id="name" value="{{ $organization->name }}" required>
                     <span class="text-danger">{{ $errors->first('name') }}</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="code_name">Code Name</label>
-                    <input type="text" name="code_name" class="form-control" id="code_name" value="{{ $company->code_name }}">
+                    <input type="text" name="code_name" class="form-control" id="code_name" value="{{ $organization->code_name }}">
                     <span class=" text-danger">{{ $errors->first('code_name') }}</span>
                 </div>
             </div>
@@ -23,14 +23,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="email">Email <code>*</code></label>
-                    <input type="text" name="email" class="form-control" id="email" value="{{ $company->email }}" required>
+                    <input type="text" name="email" class="form-control" id="email" value="{{ $organization->email }}" required>
                     <span class=" text-danger">{{ $errors->first('email') }}</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="address">Address </label>
-                    <input type="text" name="address" class="form-control" id="address" value="{{ $company->address }}">
+                    <input type="text" name="address" class="form-control" id="address" value="{{ $organization->address }}">
                     <span class=" text-danger">{{ $errors->first('address') }}</span>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <select class="form-control select2bs4 country_code" name="country_code" id="country_code" style="width: 100%;">
                         @if(!is_null($phoneCodes))
                         @foreach($phoneCodes as $code)
-                        <option value="{{ $code->code }}" {{ $company->country_code && $company->country_code == $code->code ? 'selected' : ''}}>{{$code->country}} ({{$code->code}})</option>
+                        <option value="{{ $code->code }}" {{ $organization->country_code && $organization->country_code == $code->code ? 'selected' : ''}}>{{$code->country}} ({{$code->code}})</option>
                         @endforeach
                         @endif
                     </select>
@@ -53,7 +53,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="phone">Phone</label>
-                    <input type="text" name="phone" class="form-control" id="phone" value="{{ $company->phone }}" placeholder="1XXXX">
+                    <input type="text" name="phone" class="form-control" id="phone" value="{{ $organization->phone }}" placeholder="1XXXX">
                     <span class="text-danger">{{ $errors->first('phone') }}</span>
                 </div>
             </div>
@@ -62,7 +62,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="custom-file-input">Company Logo</label>
+                    <label for="custom-file-input">Organization Logo</label>
                     <div class="input-group">
                         <div class="custom-file">
                             <input type="file" name="image" class="custom-file-input" id="image" accept="image/*" onchange="loadFile(event)">
@@ -74,7 +74,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label> &nbsp; </label>
-                    <img id="outputForUpdate" src="{{asset('images/company/logos/'. $company->logo)}}" height="150px" width="140px" style="margin-top: 10px" />
+                    <img id="outputForUpdate" src="{{asset('images/organization/logos/'. $organization->logo)}}" height="150px" width="140px" style="margin-top: 10px" />
                 </div>
             </div>
         </div>

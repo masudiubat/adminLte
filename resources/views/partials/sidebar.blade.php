@@ -20,6 +20,39 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
     with font-awesome or any other icon font library -->
+            <li class="nav-header">PRIMARY TOOLS</li>
+            @hasanyrole('admin')
+            <li class="nav-item">
+                <a href="{{route('admin.project')}}" class="{{ request()->routeIs('admin.project*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-project-diagram"></i>
+                    <p>All Project </p>
+                </a>
+            </li>
+            @endhasanyrole
+            @hasanyrole('admin|client')
+            <li class="nav-item">
+                <a href="{{route('organization.project')}}" class="{{ request()->routeIs('organization.project*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-project-diagram"></i>
+                    <p>All Project </p>
+                </a>
+            </li>
+            @endhasanyrole
+            @hasanyrole('admin')
+            <li class="nav-item">
+                <a href="{{route('admin.project.create')}}" class="{{ request()->routeIs('admin.project.create*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-tasks"></i>
+                    <p>New Project </p>
+                </a>
+            </li>
+            @endhasanyrole
+            @hasanyrole('admin|client')
+            <li class="nav-item">
+                <a href="{{route('organization.project.create')}}" class="{{ request()->routeIs('organization.project.create*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-tasks"></i>
+                    <p>New Project </p>
+                </a>
+            </li>
+            @endhasanyrole
             <li class="nav-header">AUXILIARY TOOLS</li>
             <li class="nav-item">
                 <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
@@ -42,15 +75,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{route('company')}}" class="{{ request()->routeIs('company*') ? 'nav-link active' : 'nav-link' }}">
+                <a href="{{route('organization')}}" class="{{ request()->routeIs('organization*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-building"></i>
-                    <p>Company </p>
+                    <p>Organization </p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{route('assign.company.user')}}" class="{{ request()->routeIs('assign.company*') ? 'nav-link active' : 'nav-link' }}">
+                <a href="{{route('assign.organization.member')}}" class="{{ request()->routeIs('assign.organization*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-puzzle-piece"></i>
-                    <p>Assign User to Company</p>
+                    <p>Organization Member</p>
                 </a>
             </li>
             <li class="nav-item">

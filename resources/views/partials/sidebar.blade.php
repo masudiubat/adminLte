@@ -23,15 +23,15 @@
             <li class="nav-header">PRIMARY TOOLS</li>
             @hasanyrole('admin')
             <li class="nav-item">
-                <a href="{{route('admin.project')}}" class="{{ request()->routeIs('admin.project*') ? 'nav-link active' : 'nav-link' }}">
+                <a href="{{route('admin.project.index')}}" class="{{ request()->routeIs('admin.project.index*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
                     <p>All Project </p>
                 </a>
             </li>
             @endhasanyrole
-            @hasanyrole('admin|client')
+            @hasanyrole('client')
             <li class="nav-item">
-                <a href="{{route('organization.project')}}" class="{{ request()->routeIs('organization.project*') ? 'nav-link active' : 'nav-link' }}">
+                <a href="{{route('organization.project.index')}}" class="{{ request()->routeIs('organization.project.index*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
                     <p>All Project </p>
                 </a>
@@ -45,7 +45,7 @@
                 </a>
             </li>
             @endhasanyrole
-            @hasanyrole('admin|client')
+            @hasanyrole('client')
             <li class="nav-item">
                 <a href="{{route('organization.project.create')}}" class="{{ request()->routeIs('organization.project.create*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-tasks"></i>
@@ -58,6 +58,13 @@
                 <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-laptop-house"></i>
                     <p>Researcher Skills </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{route('scope')}}" class="{{ request()->routeIs('scope*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-stethoscope"></i>
+                    <p>Scopes </p>
                 </a>
             </li>
 

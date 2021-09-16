@@ -3,6 +3,7 @@
 namespace App;
 
 use App\User;
+use App\Skill;
 use App\Organization;
 use App\OrganizationMember;
 use Illuminate\Database\Eloquent\Model;
@@ -33,5 +34,20 @@ class Project extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function organization_members()
+    {
+        return $this->belongsToMany(OrganizationMember::class);
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
+    }
+
+    public function researchers()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

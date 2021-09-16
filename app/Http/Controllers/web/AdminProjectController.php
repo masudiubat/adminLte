@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\web;
 
-use App\Http\Controllers\Controller;
+use App\User;
+use App\Scope;
+use App\Skill;
+use App\Organization;
+use App\OrganizationMember;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ProjectController extends Controller
+class AdminProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,7 +29,18 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        $organizations = Organization::all();
+        $moderators = User::where('role', 'moderator')->get();
+        $researchers = User::where('role', 'researcher')->get();
+        $skills = Skill::all();
+        $scopes = Scope::all();
+        return view('pages.project.create', ['scopes' => $scopes, 'skills' => $skills, 'organizations' => $organizations, 'moderators' => $moderators, 'researchers' => $researchers]);
+    }
+
+    public function search_member($id)
+    {
+        $members = OrganizationMember::with('user')->where('organization_id', $id)->get();
+        return response()->json(['members' => $members]);
     }
 
     /**

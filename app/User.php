@@ -61,4 +61,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(OrganizationMember::class);
     }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
+
+    public function moderator()
+    {
+        return $this->hasMany(User::class, 'moderator_id');
+    }
 }

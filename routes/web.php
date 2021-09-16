@@ -113,8 +113,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/assign/organization/member/update/{id}', 'web\OrganizationMemberController@update')->name('assign.organization.member.update');
     Route::delete('/assign/organization/member/destroy/{id}', 'web\OrganizationMemberController@destroy')->name('assign.organization.member.destroy');
 
-    Route::get('/admin/project', 'web\ProjectController@index')->name('admin.project')->middleware(['role:admin']);
-    Route::get('/admin/project/create', 'web\ProjectController@create')->name('admin.project.create')->middleware(['role:admin']);
-    Route::get('/organization/project/', 'web\OrganizationProjectController@index')->name('organization.project')->middleware(['role:admin|client']);
+    /**
+     * Project Related Routes
+     */
+    Route::get('/scope', 'web\ScopeController@index')->name('scope')->middleware(['role:admin']);
+    Route::post('/scope/store', 'web\ScopeController@store')->name('scope.store')->middleware(['role:admin']);
+    Route::get('/scope/edit/{id}', 'web\ScopeController@edit')->name('scope.edit')->middleware(['role:admin']);
+    Route::post('/scope/update/{id}', 'web\ScopeController@update')->name('scope.update')->middleware(['role:admin']);
+    Route::delete('/scope/destroy/{id}', 'web\ScopeController@destroy')->name('scope.destroy')->middleware(['role:admin']);
+
+    /**
+     * Project Related Routes
+     */
+    Route::get('/admin/project/index', 'web\AdminProjectController@index')->name('admin.project.index')->middleware(['role:admin']);
+    Route::get('/admin/project/create', 'web\AdminProjectController@create')->name('admin.project.create')->middleware(['role:admin']);
+    Route::post('/admin/project/store', 'web\AdminProjectController@store')->name('admin.project.store')->middleware(['role:admin']);
+    Route::get('/admin/project/search/member/{id}', 'web\AdminProjectController@search_member')->name('admin.project.search.member')->middleware(['role:admin']);
+    Route::get('/organization/project/index', 'web\OrganizationProjectController@index')->name('organization.project.index')->middleware(['role:admin|client']);
     Route::get('/organization/project/create', 'web\OrganizationProjectController@create')->name('organization.project.create')->middleware(['role:admin|client']);
 });

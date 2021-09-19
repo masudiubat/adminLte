@@ -3,6 +3,7 @@
 namespace App;
 
 use App\User;
+use App\Scope;
 use App\Skill;
 use App\Organization;
 use App\OrganizationMember;
@@ -49,5 +50,10 @@ class Project extends Model
     public function researchers()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function scopes()
+    {
+        return $this->belongsToMany(Scope::class);
     }
 }

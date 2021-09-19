@@ -121,14 +121,14 @@
                             </div>
                             <div class="col-md-4 col-lg-4">
                                 <div class="form-group">
-                                    <label for="mobile">URL</label>
-                                    <input type="text" name="title" id="title" class="form-control">
+                                    <label for="url">URL</label>
+                                    <input type="text" name="url[]" id="url" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-4 col-lg-4">
                                 <div class="form-group">
-                                    <label for="mobile">Comment</label>
-                                    <input type="text" name="comment" id="title" class="form-control">
+                                    <label for="comment">Comment</label>
+                                    <input type="text" name="comment[]" id="comment" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-1 col-lg-1">
@@ -212,14 +212,14 @@
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="form-group">
-                                <label for="mobile">URL</label>
-                                <input type="text" name="title" id="title" class="form-control">
+                                <label for="url">URL</label>
+                                <input type="text" name="url[]" id="url" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="form-group">
-                                <label for="mobile">Comment</label>
-                                <input type="text" name="comment" id="title" class="form-control">
+                                <label for="comment">Comment</label>
+                                <input type="text" name="comment[]" id="comment" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-1 col-lg-1">

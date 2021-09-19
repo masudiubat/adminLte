@@ -2,20 +2,15 @@
 
 namespace App;
 
-use App\Project;
 use Illuminate\Database\Eloquent\Model;
 
-class Scope extends Model
+class ProjectScope extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'name',
+        'project_id',
+        'scope_id',
         'created_at',
         'updated_at'
     ];
-
-    public function projects()
-    {
-        return $this->belongsToMany(Project::class);
-    }
 }

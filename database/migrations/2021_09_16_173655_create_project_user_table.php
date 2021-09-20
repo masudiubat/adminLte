@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectScopeTable extends Migration
+class CreateProjectUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateProjectScopeTable extends Migration
      */
     public function up()
     {
-        Schema::create('project_scope', function (Blueprint $table) {
+        Schema::create('project_user', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id')->index();
-            $table->unsignedBigInteger('scope_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('scope_id')->references('id')->on('scopes');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateProjectScopeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_scope');
+        Schema::dropIfExists('project_user');
     }
 }

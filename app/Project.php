@@ -21,16 +21,13 @@ class Project extends Model
         'end_date',
         'is_approved',
         'executive_summary',
-        'target_url',
+        'questionnaires',
         'hide_from_client',
         'created_at',
         'updated_at'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    
 
     public function organization()
     {
@@ -47,13 +44,18 @@ class Project extends Model
         return $this->belongsToMany(Skill::class);
     }
 
-    public function researchers()
+    public function moderator()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function users()
     {
         return $this->belongsToMany(User::class);
     }
 
-    public function scopes()
+    public function project_scopes()
     {
-        return $this->belongsToMany(Scope::class);
+        return $this->hasMany(ProjectScope::class);
     }
 }

@@ -22,11 +22,40 @@
     with font-awesome or any other icon font library -->
             <li class="nav-header">PRIMARY TOOLS</li>
             @hasanyrole('admin')
-            <li class="nav-item">
-                <a href="{{route('admin.project.index')}}" class="{{ request()->routeIs('admin.project.index*') ? 'nav-link active' : 'nav-link' }}">
+            <li class="{{ request()->routeIs('admin.project*') ? 'nav-item menu-open' : 'nav-item' }}">
+                <a href="#" class="{{ request()->routeIs('admin.project*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
-                    <p>All Project </p>
+                    <p>
+                        Projects
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
                 </a>
+                <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{route('admin.project.create')}}" class="{{ request()->routeIs('admin.project.create*') ? 'nav-link active' : 'nav-link' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>New Project </p>
+                    </a>
+                </li>
+                    <li class="nav-item">
+                        <a href="{{route('admin.project.current') }}" class="{{ request()->routeIs('admin.project.current') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Current Projects</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/mailbox/compose.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Upcomming Project</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Archieve</p>
+                        </a>
+                    </li>
+                </ul>
             </li>
             @endhasanyrole
             @hasanyrole('client')
@@ -34,14 +63,6 @@
                 <a href="{{route('organization.project.index')}}" class="{{ request()->routeIs('organization.project.index*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
                     <p>All Project </p>
-                </a>
-            </li>
-            @endhasanyrole
-            @hasanyrole('admin')
-            <li class="nav-item">
-                <a href="{{route('admin.project.create')}}" class="{{ request()->routeIs('admin.project.create*') ? 'nav-link active' : 'nav-link' }}">
-                    <i class="nav-icon fas fa-tasks"></i>
-                    <p>New Project </p>
                 </a>
             </li>
             @endhasanyrole

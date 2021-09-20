@@ -67,8 +67,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Project::class);
     }
 
-    public function moderator()
+    public function moderators()
     {
-        return $this->hasMany(User::class, 'moderator_id');
+        return $this->hasMany(Project::class, 'moderator_id');
     }
 }

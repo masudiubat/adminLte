@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label for="name">Select Organization Members<code>*</code></label>
+                                <label for="name">Select Organization Members</label>
                                 <select class="form-control select2bs4 member" multiple="multiple" id="member" name="member[]" data-placeholder="Select Organization Members" style="width: 100%;">
                                     <option value="">Select Organization Member</option>
 
@@ -92,7 +92,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label for="name">Select Project Researchers<code>*</code></label>
+                                <label for="name">Select Project Researchers</label>
                                 <select class="form-control select2bs4 researcher" multiple="multiple" id="researcher" name="researcher[]" data-placeholder="Select Organization Members" style="width: 100%;">
                                     <option>Select Project Researcher</option>
                                     @if(!is_null($researchers))
@@ -146,14 +146,14 @@
                     <div class="row">
                         <div class="col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label for="">Start Date and End Date</label>
+                                <label for="">Start Date and End Date<code>*</code></label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
                                             <i class="far fa-calendar-alt"></i>
                                         </span>
                                     </div>
-                                    <input type="text" class="form-control float-right" id="reservation">
+                                    <input type="text" class="form-control float-right" name="date" id="reservation">
                                 </div>
                             </div>
                         </div>

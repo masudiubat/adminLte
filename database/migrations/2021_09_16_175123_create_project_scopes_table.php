@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectResearcherTable extends Migration
+class CreateProjectScopesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateProjectResearcherTable extends Migration
      */
     public function up()
     {
-        Schema::create('project_researcher', function (Blueprint $table) {
+        Schema::create('project_scopes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id')->index();
-            $table->unsignedBigInteger('researcher_id')->index();
+            $table->unsignedBigInteger('scope_id')->index();
+            $table->string('terget_url')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('researcher_id')->references('id')->on('users');
+            $table->foreign('scope_id')->references('id')->on('scopes');
         });
     }
 
@@ -30,6 +32,6 @@ class CreateProjectResearcherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_researcher');
+        Schema::dropIfExists('project_scopes');
     }
 }

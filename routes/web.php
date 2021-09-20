@@ -129,6 +129,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/admin/project/create', 'web\AdminProjectController@create')->name('admin.project.create')->middleware(['role:admin']);
     Route::post('/admin/project/store', 'web\AdminProjectController@store')->name('admin.project.store')->middleware(['role:admin']);
     Route::get('/admin/project/search/member/{id}', 'web\AdminProjectController@search_member')->name('admin.project.search.member')->middleware(['role:admin']);
+    Route::get('/admin/project/current', 'web\AdminProjectController@current_project')->name('admin.project.current')->middleware(['role:admin']);
+    Route::delete('/admin/project/destroy/{id}', 'web\AdminProjectController@destroy')->name('admin.project.destroy')->middleware(['role:admin']);
     Route::get('/organization/project/index', 'web\OrganizationProjectController@index')->name('organization.project.index')->middleware(['role:admin|client']);
     Route::get('/organization/project/create', 'web\OrganizationProjectController@create')->name('organization.project.create')->middleware(['role:admin|client']);
 });

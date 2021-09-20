@@ -10,7 +10,13 @@ class ProjectScope extends Model
     protected $fillable = [
         'project_id',
         'scope_id',
+        'terget_url',
+        'comment',
         'created_at',
         'updated_at'
     ];
+
+    public function project(){
+        return $this->belongsTo(Project::class);
+    }
 }

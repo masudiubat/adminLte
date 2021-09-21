@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Current Project')
+@section('title', 'All Projects')
 
 @push('css')
 <!-- DataTables -->
@@ -15,7 +15,7 @@
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Current Project</li>
+<li class="breadcrumb-item active">All Projects</li>
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Current Project</h3>
+                <h3 class="card-title">All Projects</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body" style="padding: 1.25rem 0.25rem;">
@@ -31,21 +31,30 @@
                     <thead>
                         <tr>
                             <th>Project Title</th>
-                            <th>Organization Name</th>
                             <th>Moderator</th>
                             <th>Start Date</th>
                             <th>End Date</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($projects->reverse() as $project)
                         <tr>
-                            <td><a href="{{route('admin.project.show', $project->id)}}" data-toggle="tooltip" data-placement="top" title="Project Details">{{ $project->title }}</a></td>
-                            <td>@if(!is_null($project->organization)){{ $project->organization->name }}@endif</td>
+                            <td><a href="{{route('client.project.show', $project->id)}}" data-toggle="tooltip" data-placement="top" title="Project Details">{{ $project->title }}</a></td>
                             <td>@if(!is_null($project->moderator)){{ $project->moderator->name }}@endif</td>
                             <td>{{ date('M d, Y', strtotime($project->start_date))}}</td>
                             <td>{{ date('M d, Y', strtotime($project->end_date))}}</td>
+                            <td>
+                                @php($end_date = \Carbon\Carbon::parse($project->end_date))
+                                @php($start_date = \Carbon\Carbon::parse($project->start_date))
+                                @if ($end_date->isPast())
+                                <span class="right badge badge-success">Complete</span>
+                                @elseif ($start_date->isPast() && $end_date->isFuture())
+                                <span class="right badge badge-info">Going On</span>
+                                @elseif ($start_date->isFuture())
+                                <span class="right badge badge-danger">Upcoming</span>
+                                @endif
                             <td>
                                 <a onclick="event.preventDefault(); editProject('{{ $project->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" onclick="event.preventDefault(); deleteProject('{{$project->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash-alt"></i></a>
@@ -61,10 +70,10 @@
                     <tfoot>
                         <tr>
                             <th>Project Title</th>
-                            <th>Organization Name</th>
                             <th>Moderator</th>
                             <th>Start Date</th>
                             <th>End Date</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -101,6 +110,10 @@
             "lengthChange": false,
             "autoWidth": false,
             "ordering": false,
+            "lengthMenu": [
+                [10, 20, 30, 40, 50, -1],
+                [10, 20, 30, 40, 50, "All"]
+            ]
             /*"buttons": ["csv", "excel", "pdf", "print"] */
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $('#example2').DataTable({

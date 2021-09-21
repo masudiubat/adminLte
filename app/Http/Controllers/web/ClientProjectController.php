@@ -6,39 +6,31 @@ use App\User;
 use App\Scope;
 use App\Skill;
 use App\Project;
-use App\ProjectUser;
+use Carbon\Carbon;
 use App\Organization;
 use App\ProjectScope;
 use App\OrganizationMember;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Library\ActivityLogLib;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Auth;
 
-class AdminProjectController extends Controller
+class ClientProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function current_project()
+    public function index()
     {
-        $projects = Project::whereDate('start_date', '<=', date("Y-m-d"))->whereDate('end_date', '>=', date("Y-m-d"))->get();
-        return view('pages.project.current-project', ['projects' => $projects]);
-    }
+        $id = Auth::user()->id;
+        $organizationMember = OrganizationMember::with('organization')->where('user_id', $id)->first();
+        $organizationId = $organizationMember->organization->id;
 
-    public function upcoming_project()
-    {
-        $projects = Project::whereDate('start_date', '>', date("Y-m-d"))->whereDate('end_date', '>', date("Y-m-d"))->get();
-        return view('pages.project.upcoming-project', ['projects' => $projects]);
-    }
-
-    public function archieve_project()
-    {
-        $projects = Project::get();
-        return view('pages.project.archieve-project', ['projects' => $projects]);
+        $projects = Project::where('organization_id', $organizationId)->get();
+        return view('pages.project.client.index', ['projects' => $projects]);
     }
 
     /**
@@ -48,18 +40,17 @@ class AdminProjectController extends Controller
      */
     public function create()
     {
-        $organizations = Organization::all();
+        $id = Auth::user()->id;
+        $organizationMember = OrganizationMember::with('organization')->where('user_id', $id)->first();
+        $organizationId = $organizationMember->organization->id;
+        $organization = $organizationMember->organization->name;
+        $members = OrganizationMember::with('user')->where('organization_id', $organizationId)->get();
+
         $moderators = User::where('role', 'moderator')->get();
         $researchers = User::where('role', 'researcher')->get();
         $skills = Skill::all();
         $scopes = Scope::all();
-        return view('pages.project.create', ['scopes' => $scopes, 'skills' => $skills, 'organizations' => $organizations, 'moderators' => $moderators, 'researchers' => $researchers]);
-    }
-
-    public function search_member($id)
-    {
-        $members = OrganizationMember::with('user')->where('organization_id', $id)->get();
-        return response()->json(['members' => $members]);
+        return view('pages.project.client.create', ['members' => $members, 'scopes' => $scopes, 'skills' => $skills, 'organizationId' => $organizationId,  'organization' => $organization, 'moderators' => $moderators, 'researchers' => $researchers]);
     }
 
     /**
@@ -73,16 +64,16 @@ class AdminProjectController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'organization' => 'required',
-            'moderator' => 'required',
             'date' => 'required',
             ''
         ], [
             'title.required' => 'Project title is required.',
             'organization.required' => 'Organization is required',
-            'moderator.required' => 'Moderator is required',
             'date.required' => 'Start and End date is required'
         ]);
-
+        $id = Auth::user()->id;
+        $organizationMember = OrganizationMember::with('organization')->where('user_id', $id)->first();
+        $organizationId = $organizationMember->organization->id;
         $project = new Project();
 
         if ($request->has('title')) {
@@ -90,11 +81,7 @@ class AdminProjectController extends Controller
         }
 
         if ($request->has('organization')) {
-            $project->organization_id = $request->input('organization');
-        }
-
-        if ($request->has('moderator')) {
-            $project->moderator_id = $request->input('moderator');
+            $project->organization_id = $organizationId;
         }
 
         if ($request->has('date')) {
@@ -117,9 +104,7 @@ class AdminProjectController extends Controller
             if ($request->has('member')) {
                 $project->organization_members()->attach($request->input('member'));
             }
-            if ($request->has('researcher')) {
-                $project->users()->attach($request->input('researcher'));
-            }
+
             if ($request->has('skill')) {
                 $project->skills()->attach($request->input('skill'));
             }
@@ -140,11 +125,11 @@ class AdminProjectController extends Controller
                     $i++;
                 }
             }
-            ActivityLogLib::addLog('User has created a new project named ' . $project->title . ' successfully.', 'success');
+            ActivityLogLib::addLog('Client has created a new project named ' . $project->title . ' successfully.', 'success');
             Toastr::success('New project named ' . $project->title . ' has created successfully.', 'success');
             return redirect()->back();
         } else {
-            ActivityLogLib::addLog('User has tried to create new skill but failed.', 'error');
+            ActivityLogLib::addLog('Client has tried to create new skill but failed.', 'error');
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
@@ -158,7 +143,12 @@ class AdminProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::with('organization', 'organization_members', 'skills', 'moderator', 'users', 'project_scopes')->findOrFail($id);
+
+        $userId = Auth::user()->id;
+        $organizationMember = OrganizationMember::with('organization')->where('user_id', $userId)->first();
+        $organizationId = $organizationMember->organization->id;
+
+        $project = Project::with('organization', 'organization_members', 'skills', 'moderator', 'users', 'project_scopes')->where('organization_id', $organizationId)->where('id', $id)->first();
         $numberOfScopes = $project->project_scopes->count();
         $numberOfResearchers = $project->users->count();
         $to = Carbon::parse($project->start_date);
@@ -167,7 +157,7 @@ class AdminProjectController extends Controller
         $today = date('Y-m-d');
         $timeRemaining = $from->diffInHours($today) + 24;
 
-        return view('pages.project.show', ['timeRemaining' => $timeRemaining, 'timeDuration' => $timeDuration, 'numberOfResearchers' => $numberOfResearchers, 'project' => $project, 'numberOfScopes' => $numberOfScopes]);
+        return view('pages.project.client.show', ['timeRemaining' => $timeRemaining, 'timeDuration' => $timeDuration, 'numberOfResearchers' => $numberOfResearchers, 'project' => $project, 'numberOfScopes' => $numberOfScopes]);
     }
 
     /**

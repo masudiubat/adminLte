@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scope;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectScope extends Model
@@ -16,7 +17,13 @@ class ProjectScope extends Model
         'updated_at'
     ];
 
-    public function project(){
+    public function project()
+    {
         return $this->belongsTo(Project::class);
+    }
+
+    public function scope()
+    {
+        return $this->belongsTo(Scope::class);
     }
 }

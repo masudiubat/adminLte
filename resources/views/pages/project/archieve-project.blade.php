@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Current Project')
+@section('title', 'Archieve Project')
 
 @push('css')
 <!-- DataTables -->
@@ -15,7 +15,7 @@
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Current Project</li>
+<li class="breadcrumb-item active">Archieve Project</li>
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Current Project</h3>
+                <h3 class="card-title">Archieve Project</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body" style="padding: 1.25rem 0.25rem;">

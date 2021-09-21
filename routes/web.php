@@ -130,7 +130,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/admin/project/store', 'web\AdminProjectController@store')->name('admin.project.store')->middleware(['role:admin']);
     Route::get('/admin/project/search/member/{id}', 'web\AdminProjectController@search_member')->name('admin.project.search.member')->middleware(['role:admin']);
     Route::get('/admin/project/current', 'web\AdminProjectController@current_project')->name('admin.project.current')->middleware(['role:admin']);
+    Route::get('/admin/project/upcoming', 'web\AdminProjectController@upcoming_project')->name('admin.project.upcoming')->middleware(['role:admin']);
+    Route::get('/admin/project/archieve', 'web\AdminProjectController@archieve_project')->name('admin.project.archieve')->middleware(['role:admin']);
+    Route::get('/admin/project/show/{id}', 'web\AdminProjectController@show')->name('admin.project.show')->middleware(['role:admin']);
     Route::delete('/admin/project/destroy/{id}', 'web\AdminProjectController@destroy')->name('admin.project.destroy')->middleware(['role:admin']);
-    Route::get('/organization/project/index', 'web\OrganizationProjectController@index')->name('organization.project.index')->middleware(['role:admin|client']);
-    Route::get('/organization/project/create', 'web\OrganizationProjectController@create')->name('organization.project.create')->middleware(['role:admin|client']);
+    Route::get('/client/project/index', 'web\ClientProjectController@index')->name('client.project.index')->middleware(['role:client']);
+    Route::get('/client/project/create', 'web\ClientProjectController@create')->name('client.project.create')->middleware(['role:client']);
+    Route::post('/client/project/store', 'web\ClientProjectController@store')->name('client.project.store')->middleware(['role:client']);
+    Route::get('/client/project/search/member', 'web\ClientProjectController@search_member')->name('client.project.search.member')->middleware(['role:client']);
+    Route::get('/client/project/show/{id}', 'web\ClientProjectController@show')->name('client.project.show')->middleware(['role:client']);
 });

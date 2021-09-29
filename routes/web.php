@@ -123,6 +123,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/scope/destroy/{id}', 'web\ScopeController@destroy')->name('scope.destroy')->middleware(['role:admin']);
 
     /**
+     * Report Category related routes
+     */
+    Route::get('/report/category', 'web\ReportCategoryController@index')->name('report.category')->middleware(['role:admin']);
+    Route::post('/report/category', 'web\ReportCategoryController@store')->name('report.category.store')->middleware(['role:admin']);
+    Route::get('/report/category/edit/{id}', 'web\ReportCategoryController@edit')->name('report.category.edit')->middleware(['role:admin']);
+    Route::post('/report/category/{id}', 'web\ReportCategoryController@update')->name('report.category.update')->middleware(['role:admin']);
+    Route::delete('/report/category/{id}', 'web\ReportCategoryController@destroy')->name('report.category.destroy')->middleware(['role:admin']);
+    /**
      * Project Related Routes
      */
     Route::get('/admin/project/index', 'web\AdminProjectController@index')->name('admin.project.index')->middleware(['role:admin']);
@@ -134,9 +142,27 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/admin/project/archieve', 'web\AdminProjectController@archieve_project')->name('admin.project.archieve')->middleware(['role:admin']);
     Route::get('/admin/project/show/{id}', 'web\AdminProjectController@show')->name('admin.project.show')->middleware(['role:admin']);
     Route::delete('/admin/project/destroy/{id}', 'web\AdminProjectController@destroy')->name('admin.project.destroy')->middleware(['role:admin']);
+
+    /**
+     * Researcher routes
+     */
     Route::get('/client/project/index', 'web\ClientProjectController@index')->name('client.project.index')->middleware(['role:client']);
     Route::get('/client/project/create', 'web\ClientProjectController@create')->name('client.project.create')->middleware(['role:client']);
     Route::post('/client/project/store', 'web\ClientProjectController@store')->name('client.project.store')->middleware(['role:client']);
     Route::get('/client/project/search/member', 'web\ClientProjectController@search_member')->name('client.project.search.member')->middleware(['role:client']);
     Route::get('/client/project/show/{id}', 'web\ClientProjectController@show')->name('client.project.show')->middleware(['role:client']);
+    /**
+     * Researcher routes
+     */
+    Route::get('/researcher/project/all', 'web\ResearcherProjectController@index')->name('researcher.project.all')->middleware(['role:researcher']);
+    Route::get('/researcher/project/show/{id}', 'web\ResearcherProjectController@show')->name('researcher.project.show')->middleware(['role:researcher']);
+    Route::get('/researcher/project/current', 'web\ResearcherProjectController@current_project')->name('researcher.project.current')->middleware(['role:researcher']);
+    Route::get('/researcher/project/upcoming', 'web\ResearcherProjectController@upcoming_project')->name('researcher.project.upcoming')->middleware(['role:researcher']);
+    Route::get('/researcher/project/archieve', 'web\ResearcherProjectController@archieve_project')->name('researcher.project.archieve')->middleware(['role:researcher']);
+    Route::get('/researcher/project/unapproved', 'web\ResearcherProjectController@unapproved_project')->name('researcher.project.unapproved')->middleware(['role:researcher']);
+
+    /**
+     * Researcher Report related routes
+     */
+    Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher']);
 });

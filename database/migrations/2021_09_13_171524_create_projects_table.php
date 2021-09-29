@@ -22,6 +22,7 @@ class CreateProjectsTable extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->tinyInteger('is_approved')->default('0');
+            $table->string('status')->nullable();
             $table->text('executive_summary')->nullable();
             $table->text('questionnaires')->nullable();
             $table->tinyInteger('hide_from_client')->default('0');

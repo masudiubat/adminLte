@@ -58,6 +58,55 @@
                 </ul>
             </li>
             @endhasanyrole
+            @hasanyrole('researcher')
+            <li class="{{ request()->routeIs('researcher.project*') ? 'nav-item menu-open' : 'nav-item' }}">
+                <a href="#" class="{{ request()->routeIs('researcher.project*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-project-diagram"></i>
+                    <p>
+                        Projects
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{route('researcher.project.all') }}" class="{{ request()->routeIs('researcher.project.all') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All Projects</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('researcher.project.current') }}" class="{{ request()->routeIs('researcher.project.current') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Active Projectss</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('researcher.project.upcoming') }}" class="{{ request()->routeIs('researcher.project.upcoming') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Upcoming Projects</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('researcher.project.archieve') }}" class="{{ request()->routeIs('researcher.project.archieve') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Archieve</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('researcher.project.unapproved') }}" class="{{ request()->routeIs('researcher.project.unapproved') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Unapproved Projects</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('researcher.new.report')}}" class="{{ request()->routeIs('researcher.new.report*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-bug"></i>
+                    <p>New Report </p>
+                </a>
+            </li>
+            @endhasanyrole
             @hasanyrole('client')
             <li class="{{ request()->routeIs('client.project*') ? 'nav-item menu-open' : 'nav-item' }}">
                 <a href="#" class="{{ request()->routeIs('client.project*') ? 'nav-link active' : 'nav-link' }}">
@@ -83,7 +132,7 @@
                 </ul>
             </li>
             @endhasanyrole
-
+            @hasanyrole('admin')
             <li class="nav-header">AUXILIARY TOOLS</li>
             <li class="nav-item">
                 <a href="{{route('researcher.skill')}}" class="{{ request()->routeIs('researcher.skill*') ? 'nav-link active' : 'nav-link' }}">
@@ -91,7 +140,12 @@
                     <p>Researcher Skills </p>
                 </a>
             </li>
-
+            <li class="nav-item">
+                <a href="{{route('report.category')}}" class="{{ request()->routeIs('report.category*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>Report Category </p>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="{{route('scope')}}" class="{{ request()->routeIs('scope*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-stethoscope"></i>
@@ -105,6 +159,7 @@
                     <p>Social Media </p>
                 </a>
             </li>
+
             <li class="nav-header">ADMINISTRATIVE TOOLS</li>
             <li class="nav-item">
                 <a href="{{route('user.index')}}" class="{{ request()->routeIs('user*') ? 'nav-link active' : 'nav-link' }}">
@@ -136,7 +191,7 @@
                     <p>Roles & Permissions </p>
                 </a>
             </li>
-
+            @endhasanyrole
 
             <li class="{{ request()->routeIs('personal.profile*') ? 'nav-item menu-open' : 'nav-item' }}">
                 <a href="#" class="{{ request()->routeIs('personal.profile*') ? 'nav-link active' : 'nav-link' }}">
@@ -151,18 +206,6 @@
                         <a href="{{route('personal.profile.detail', Auth::user()->id) }}" class="{{ request()->routeIs('personal.profile.detail') ? 'nav-link active' : 'nav-link' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Profile</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/mailbox/compose.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Compose</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/mailbox/read-mail.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Read</p>
                         </a>
                     </li>
                 </ul>

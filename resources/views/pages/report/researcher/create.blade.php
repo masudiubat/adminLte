@@ -73,16 +73,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(!is_null($project->project_scopes))
-                                        @foreach($project->project_scopes as $scope)
-                                        <tr>
-                                            <td><input type="radio" class="" id="html" name="fav_language" value="{{ $scope->scope->id }}"></td>
-                                            <td>{{ $scope->scope->name }}</td>
-                                            <td>{{ $scope->terget_url }}</td>
-                                            <td>{{ $scope->comment }}</td>
-                                        </tr>
-                                        @endforeach
-                                        @endif
+                                       
                                     </tbody>
                                 </table>
                             </div>
@@ -124,7 +115,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="description">Description <br /><small> Describe the vulnerability, and provide a Proof of Concept. How would you fix it? </small></label>
-                                <textarea class="form-control summernote" name="description" id="summernote">What is the vulnerability?</textarea>
+                                <textarea class="form-control summernote" name="description" id="description"></textarea>
                             </div>
                         </div>
                     </div>
@@ -132,7 +123,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="reproduce">Steps to Reproduce <br /><small> Describe how to reproduce the vulnerability </small></label>
-                                <textarea class="form-control summernote" name="reproduce" id="summernote"></textarea>
+                                <textarea class="form-control summernote" name="reproduce" id="reproduce"></textarea>
                             </div>
                         </div>
                     </div>
@@ -140,7 +131,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="security_impact">Security Impact</label>
-                                <textarea class="form-control summernote" name="security_impact" id="summernote">What is security impact</textarea>
+                                <textarea class="form-control summernote" name="security_impact" id="security_impact"></textarea>
                             </div>
                         </div>
                     </div>
@@ -149,16 +140,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="recommendation">Recommended Fix <br /><small> Brief description with Objective, Scope, Rules and Instruction </small></label>
-                                <textarea class="form-control summernote" name="recommendation" id="summernote">Any Recommended fix you'd like us to know about this submission.</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12">
-                            <div class="form-group">
-                                <label for="name">Questionnaires <br /><small> Answer to Commonly Ask Questions </small></label>
-                                <textarea class="form-control summernote" name="questionnaires" id="summernote"></textarea>
+                                <textarea class="form-control summernote" name="recommendation" id="recommendation"></textarea>
                             </div>
                         </div>
                     </div>
@@ -168,36 +150,6 @@
                         <div class="float-right text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
                     </div>
                 </form>
-                <div class="scopeWraperCopy" style="display:none;">
-                    <div class="row">
-                        <div class="col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label for="name">Scope:</label>
-                                <select class="form-control scope" id="scope" name="scope[]">
-                                    <option>Select Scope</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label for="url">URL</label>
-                                <input type="text" name="url[]" id="url" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <input type="text" name="comment[]" id="comment" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-1 col-lg-1">
-                            <div class="input-group-addon">
-                                <a href="javascript:void(0)" class="btn btn-xs btn-danger remove"><i class="fa fa-times" aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -236,8 +188,22 @@
         })
 
         // Summernote
-        $('.summernote').summernote({
+        $('#description').summernote({
             minHeight: 100,
+            placeholder: 'What is the vulnerability?'
+        })
+        var placeholder = 'Replication steps with screenshorts:'
+        $('#reproduce').summernote({
+            minHeight: 100,
+            placeholder: placeholder
+        })
+        $('#security_impact').summernote({
+            minHeight: 100,
+            placeholder: 'What is security impact'
+        })
+        $('#recommendation').summernote({
+            minHeight: 100,
+            placeholder: "Any Recommended fix you'd like us to know about this submission."
         })
 
         ///Date range picker
@@ -260,7 +226,30 @@
 
 <script>
     $(document).ready(function() {
+        // Add scope for selected project
+        $('body').on('change', '.project', function() {
+            var id = $('.project').val();
+            var url = "{{url('project/scopes/search')}}/"+id;
 
+            $.ajax({
+                url: url,
+                method: "GET",
+            }).done(function(data) {
+                var res='';
+                for (var i = 0; i < data.scopes.length; i++) {
+                    res +=
+                    '<tr>'+
+                        '<td><input type="radio" id="scopeId" name="scope" value="'+data.scopes[i]['id']+'"></td>'+
+                        '<td>'+data.scopes[i]['scope']['name']+'</td>'+
+                        '<td>'+data.scopes[i]['terget_url']+'</td>'+
+                        '<td>'+data.scopes[i]['comment']+'</td>'+                        
+                    '</tr>';
+                };
+
+                $('tbody').html(res);
+            });
+
+        });
         //add category sub category fields group
         var scopeCounter = 2;
         $(".addMore").click(function() {
@@ -282,10 +271,5 @@
         var output = document.getElementById('productOutput');
         output.src = URL.createObjectURL(event.target.files[0]);
     };
-</script>
-<script>
-    $(function() {
-
-    })
 </script>
 @endpush

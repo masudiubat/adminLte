@@ -4,6 +4,7 @@ namespace App\Http\Controllers\web;
 
 use App\Project;
 use App\ReportCategory;
+use App\ProjectScope;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,14 @@ class ResearcherReportController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Search all scopes by project id 
+     */
+    public function search_scopes($id){
+        $scopes = ProjectScope::with('scope')->where('project_id', $id)->get();
+        return response()->json(['scopes' => $scopes], 200);
     }
 
     /**

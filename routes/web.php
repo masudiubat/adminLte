@@ -165,4 +165,5 @@ Route::group(['middleware' => ['auth']], function () {
      * Researcher Report related routes
      */
     Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher']);
+    Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher']);
 });

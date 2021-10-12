@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/password/change/{id}', 'web\UserController@change_user_password')->name('user.password.change');
 
     Route::get('/personal/profile/detail/{id}', 'web\PersonalProfileController@show')->name('personal.profile.detail');
+    Route::post('/personal/profile/change/password/{id}', 'web\PersonalProfileController@change_password')->name('personal.profile.change.password');
     /**
      *  Roles and Permissions related routes
      */
@@ -166,4 +167,6 @@ Route::group(['middleware' => ['auth']], function () {
      */
     Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher']);
     Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher']);
+    Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher']);
+    Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher']);
 });

@@ -185,12 +185,14 @@
                     <p>Activity Log </p>
                 </a>
             </li>
+            <!--
             <li class="nav-item">
                 <a href="{{route('role')}}" class="{{ request()->routeIs('role*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fa fa-key"></i>
                     <p>Roles & Permissions </p>
                 </a>
             </li>
+-->
             @endhasanyrole
 
             <li class="{{ request()->routeIs('personal.profile*') ? 'nav-item menu-open' : 'nav-item' }}">

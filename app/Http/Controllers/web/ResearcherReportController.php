@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\web;
 
 use App\Project;
-use App\ReportCategory;
+use App\ReportImage;
 use App\ProjectScope;
+use App\ReportCategory;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +26,8 @@ class ResearcherReportController extends Controller
     /**
      * Search all scopes by project id 
      */
-    public function search_scopes($id){
+    public function search_scopes($id)
+    {
         $scopes = ProjectScope::with('scope')->where('project_id', $id)->get();
         return response()->json(['scopes' => $scopes], 200);
     }
@@ -57,9 +60,33 @@ class ResearcherReportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function files_upload(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->hasFile('file')) {
+            $random = Str::random(6);
+            $image = $request->file('file');
+            $originalName = $image->getClientOriginalName();
+            $newActionName = $random . '.' . $image->getClientOriginalExtension();
+            $destinationPath = 'images/temp';
+            $image->move($destinationPath, $newActionName);
+
+            // save image details
+            $image = new ReportImage();
+            $image->user_id = $id;
+            $image->code = $random;
+            $image->name = $newActionName;
+            $image->original_name = $originalName;
+            $image->created_at = date('Y-m-d');
+            $image->save();
+        }
+        $images = ReportImage::where('user_id', $id)->get();
+        return response()->json(['images' => $images], 200);
+    }
     public function store(Request $request)
     {
-        //
+        echo "<pre>";
+        print_r($request->all());
     }
 
     /**

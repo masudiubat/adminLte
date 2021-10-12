@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Customer;
+use App\ReportImage;
 use App\OrganizationMember;
 use App\Mail\UserVerificationEmail;
 use Illuminate\Support\Facades\Mail;
@@ -70,5 +71,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function moderators()
     {
         return $this->hasMany(Project::class, 'moderator_id');
+    }
+
+    public function report_images()
+    {
+        return $this->hasMany(ReportImage::class);
     }
 }

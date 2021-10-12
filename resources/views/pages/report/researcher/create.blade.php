@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 <!-- daterange picker -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/dropify.css' )}}">
+<link href="https://fonts.googleapis.com/css?family=Roboto|Oswald|Michroma" rel="stylesheet" type="text/css">
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: #007bff;
@@ -41,7 +43,7 @@
             <!-- /.card-header -->
             <div class="card-body" style="padding-top: 5px;">
                 <!-- form start -->
-                <form action="{{route('client.project.store')}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('researcher.report.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -73,7 +75,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       
+
                                     </tbody>
                                 </table>
                             </div>
@@ -144,6 +146,31 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label for="recommendation">Attachment</label>
+                                <input type="file" name="attachment" class="dropify" id="attachment-files" multiple>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="img_prv" id="img_prv"></div>
+                            @if(!empty($emp_data[0]->emp_img))
+
+                            @else
+                            <img id="img_prv" style="max-width: 150px;max-height: 150px" class="img-thumbnail">
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <span id="mgs_ta">
+                            </div>
+                        </div>
+                    </div>
                     <!-- /.card-body -->
                     <div class="card-footer modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -170,6 +197,8 @@
 <script src="{{ asset('assets/plugins/inputmask/jquery.inputmask.min.js')}}"></script>
 <!-- date-range-picker -->
 <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
+<script src="{{ asset('assets/js/dropify.js' )}}"></script>
+
 <script>
     //Add select 2 function
     $(function() {
@@ -226,24 +255,90 @@
 
 <script>
     $(document).ready(function() {
+        // Add dropify class
+        $('.dropify').dropify();
+
+        // Add attachment files
+        $('#attachment-files').on('change', function(ev) {
+            if (this.files) {
+                var filesAmount = this.files.length;
+                var tblArr = [];
+                for (i = 0; i < filesAmount; i++) {
+                    var filedata = this.files[i];
+                    var imgtype = filedata.type;
+
+                    var match = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                    if (!(imgtype == match[0]) || (imgtype == match[1]) || (imgtype == match[2])) {
+                        $('#mgs_ta').html('<p style="color:red">Plz select a valid type image..only jpg jpeg allowed</p>');
+
+                    } else {
+                        $('#mgs_ta').empty();
+                        //---image preview
+
+                        var reader = new FileReader();
+                        reader.readAsDataURL(this.files[i]);
+
+                        // upload files
+                        var postData = new FormData();
+                        postData.append('file', this.files[i]);
+
+                        var url = "{{url('researcher/report/files/upload')}}";
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            async: true,
+                            type: "post",
+                            contentType: false,
+                            url: url,
+                            data: postData,
+                            processData: false,
+                        }).done(function(data) {
+                            console.log(data);
+                            for (var x = 0; x < data.images.length; x++) {
+                                console.log(data.images[x]['original_name']);
+                            }
+                            $(".dropify-clear").click();
+                            var createHtml = '<div class="">' +
+                                '<table class="table">' +
+                                '<thead>' +
+                                '<tr>' +
+                                '<th scope="col">code</th><th scope="col">Name</th><th>Image</th><th>Action</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+
+                                '</tbody>' +
+                                '</table>'
+                            $('#img_prv').html(createHtml);
+                        });
+                    }
+                }
+            }
+        });
+
+
         // Add scope for selected project
         $('body').on('change', '.project', function() {
             var id = $('.project').val();
-            var url = "{{url('project/scopes/search')}}/"+id;
+            var url = "{{url('project/scopes/search')}}/" + id;
 
             $.ajax({
                 url: url,
                 method: "GET",
             }).done(function(data) {
-                var res='';
+                var res = '';
                 for (var i = 0; i < data.scopes.length; i++) {
                     res +=
-                    '<tr>'+
-                        '<td><input type="radio" id="scopeId" name="scope" value="'+data.scopes[i]['id']+'"></td>'+
-                        '<td>'+data.scopes[i]['scope']['name']+'</td>'+
-                        '<td>'+data.scopes[i]['terget_url']+'</td>'+
-                        '<td>'+data.scopes[i]['comment']+'</td>'+                        
-                    '</tr>';
+                        '<tr>' +
+                        '<td><input type="radio" id="scopeId" name="scope" value="' + data.scopes[i]['id'] + '"></td>' +
+                        '<td>' + data.scopes[i]['scope']['name'] + '</td>' +
+                        '<td>' + data.scopes[i]['terget_url'] + '</td>' +
+                        '<td>' + data.scopes[i]['comment'] + '</td>' +
+                        '</tr>';
                 };
 
                 $('tbody').html(res);

@@ -89,6 +89,17 @@ class ResearcherReportController extends Controller
         print_r($request->all());
     }
 
+    public function temp_image_delete($id)
+    {
+        $image = ReportImage::findOrFail($id);
+        $deleteImge = $image->delete();
+        $userId = Auth::user()->id;
+        if ($deleteImge) {
+            $images = ReportImage::where('user_id', $userId)->get();
+            return response()->json(['images' => $images], 200);
+        }
+    }
+
     /**
      * Display the specified resource.
      *

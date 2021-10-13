@@ -41,15 +41,18 @@ Route::get('/console-create', function () {
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/otp/verification/show', 'web\OtpVerificationController@show')->name('otp.verification.show');
+Route::post('/otp/verification/send', 'web\OtpVerificationController@verify_otp')->name('otp.verification.send');
+Route::get('/opt/code/resend', 'web\OtpVerificationController@resend_code')->name('otp.code.resend');
 /**
  *  Researcher application related routes
  */
 Route::get('/researcher/application/create', 'web\ResearcherApplicationController@create')->name('researcher.application.create');
 Route::post('/researcher/application/store', 'web\ResearcherApplicationController@store')->name('researcher.application.store');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'TwoFA']], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
     /**
      *  User related routes
      */
@@ -169,4 +172,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher']);
     Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher']);
     Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher']);
+    Route::get('/temp/image/delete/{id}', 'web\ResearcherReportController@temp_image_delete')->name('temp.image.delete')->middleware(['role:admin|researcher']);
 });

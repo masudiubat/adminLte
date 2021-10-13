@@ -297,10 +297,17 @@
                             data: postData,
                             processData: false,
                         }).done(function(data) {
-                            console.log(data);
+                            var tddata = '';
                             for (var x = 0; x < data.images.length; x++) {
-                                console.log(data.images[x]['original_name']);
-                            }
+                                tddata +=
+                                    '<tr>' +
+                                    '<td>' + data.images[x]['code'] + '</td>' +
+                                    '<td>' + data.images[x]['original_name'] + '</td>' +
+                                    '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                                    '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
+                                    '</tr>';
+                            };
+
                             $(".dropify-clear").click();
                             var createHtml = '<div class="">' +
                                 '<table class="table">' +
@@ -310,8 +317,7 @@
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>' +
-
-                                '</tbody>' +
+                                tddata + '</tbody>' +
                                 '</table>'
                             $('#img_prv').html(createHtml);
                         });
@@ -366,5 +372,39 @@
         var output = document.getElementById('productOutput');
         output.src = URL.createObjectURL(event.target.files[0]);
     };
+
+    function deleteImg(id) {
+        var url = "{{url('/temp/image/delete')}}/" + id;
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).done(function(data) {
+
+            var tddata = '';
+            for (var x = 0; x < data.images.length; x++) {
+                tddata +=
+                    '<tr>' +
+                    '<td>' + data.images[x]['code'] + '</td>' +
+                    '<td>' + data.images[x]['original_name'] + '</td>' +
+                    '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                    '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
+                    '</tr>';
+            };
+
+            $(".dropify-clear").click();
+            var createHtml = '<div class="">' +
+                '<table class="table">' +
+                '<thead>' +
+                '<tr>' +
+                '<th scope="col">code</th><th scope="col">Name</th><th>Image</th><th>Action</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                tddata + '</tbody>' +
+                '</table>';
+            $('#img_prv').html(createHtml);
+        });
+
+    }
 </script>
 @endpush

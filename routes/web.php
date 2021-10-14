@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
      */
     Route::get('/report/category', 'web\ReportCategoryController@index')->name('report.category')->middleware(['role:admin']);
     Route::post('/report/category', 'web\ReportCategoryController@store')->name('report.category.store')->middleware(['role:admin']);
+    Route::get('/report/category/show/{id}', 'web\ReportCategoryController@show')->name('report.category.show')->middleware(['role:admin']);
     Route::get('/report/category/edit/{id}', 'web\ReportCategoryController@edit')->name('report.category.edit')->middleware(['role:admin']);
     Route::post('/report/category/{id}', 'web\ReportCategoryController@update')->name('report.category.update')->middleware(['role:admin']);
     Route::delete('/report/category/{id}', 'web\ReportCategoryController@destroy')->name('report.category.destroy')->middleware(['role:admin']);

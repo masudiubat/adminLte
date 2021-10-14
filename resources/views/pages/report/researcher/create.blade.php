@@ -27,6 +27,17 @@
             text-align: center;
         }
     }
+
+    .cpyBtn {
+        height: 30px;
+    }
+
+    button {
+        display: none;
+        float: left;
+        border: none;
+        margin-right: 10px;
+    }
 </style>
 @endpush
 @section('breadcrumb')
@@ -255,6 +266,12 @@
 
 <script>
     $(document).ready(function() {
+        //Show Copy Button
+        $(document).on('mouseenter', '.cpyBtn', function() {
+            $(this).find(":button").show();
+        }).on('mouseleave', '.cpyBtn', function() {
+            $(this).find(":button").hide();
+        });
         // Add dropify class
         $('.dropify').dropify();
 
@@ -301,7 +318,7 @@
                             for (var x = 0; x < data.images.length; x++) {
                                 tddata +=
                                     '<tr>' +
-                                    '<td>' + data.images[x]['code'] + '</td>' +
+                                    '<td class="copyImageCode">' + data.images[x]['code'] + '</td>' +
                                     '<td>' + data.images[x]['original_name'] + '</td>' +
                                     '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
                                     '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
@@ -325,6 +342,24 @@
                 }
             }
         });
+
+        // Copy code
+        $('body').on('click', '.copyImageCode', function() {
+            /* Get the text field */
+            console.log("Here");
+            var copyText = $(".copyImageCode").text();
+            console.log(copyText);
+            /* Select the text field */
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+            /* Copy the text inside the text field */
+            navigator.clipboard.writeText(copyText.value);
+
+            /* Alert the copied text */
+            alert("Copied the text: " + copyText.value);
+        });
+
 
 
         // Add scope for selected project
@@ -379,7 +414,6 @@
             url: url,
             method: "GET",
         }).done(function(data) {
-
             var tddata = '';
             for (var x = 0; x < data.images.length; x++) {
                 tddata +=

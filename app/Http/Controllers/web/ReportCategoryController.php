@@ -40,7 +40,15 @@ class ReportCategoryController extends Controller
         $category = new ReportCategory();
 
         if ($request->has('name')) {
-            $category->name = strtolower($request->input('name'));
+            $category->name = $request->input('name');
+        }
+
+        if ($request->has('description')) {
+            $category->description = $request->input('description');
+        }
+
+        if ($request->has('reference')) {
+            $category->cwe_cve_reference = $request->input('reference');
         }
 
         $category->created_at = date('Y-m-d');
@@ -55,6 +63,16 @@ class ReportCategoryController extends Controller
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
+    }
+
+    /**
+     * Show specific category details
+     */
+    public function show($id)
+    {
+        $category = ReportCategory::findOrFail($id);
+        $createView = view('pages.report-category._show', ['category' => $category])->render();
+        return (['showCategory' => $createView]);
     }
 
     /**
@@ -89,7 +107,15 @@ class ReportCategoryController extends Controller
         ]);
 
         if ($request->has('name')) {
-            $category->name = strtolower($request->input('name'));
+            $category->name = $request->input('name');
+        }
+
+        if ($request->has('description')) {
+            $category->description = $request->input('description');
+        }
+
+        if ($request->has('reference')) {
+            $category->cwe_cve_reference = $request->input('reference');
         }
 
         $category->updated_at = date('Y-m-d');

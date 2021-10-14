@@ -29,6 +29,7 @@
                         <tr>
                             <th>Sl.</th>
                             <th>Name</th>
+                            <th>CWE/CVE Reference</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -37,8 +38,9 @@
                         <tr>
                             <td>{{ $key+1 }}</td>
                             <td>{{ $category->name }}</td>
-
+                            <td>{{ $category->cwe_cve_reference }}</td>
                             <td>
+                                <a onclick="event.preventDefault(); categoryDetails('{{ $category->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                                 <a onclick="event.preventDefault(); editCategory('{{ $category->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
                                 <a href="#" onclick="event.preventDefault(); deleteCategory('{{$category->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
@@ -54,6 +56,7 @@
                         <tr>
                             <th>Sl.</th>
                             <th>Name</th>
+                            <th>CWE/CVE Reference</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -62,7 +65,7 @@
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
-        <!-- Start Modal for create new skill -->
+        <!-- Start Modal for create new category -->
         <div class="modal fade" id="NewCategoryModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -83,6 +86,18 @@
                                         <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name" required>
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="name">Description <code>*</code></label>
+                                        <textarea name="description" class="form-control" required></textarea>
+                                        <span class="text-danger">{{ $errors->first('description') }}</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="name">CWE/CVE Reference <code>*</code></label>
+                                        <input type="text" name="reference" class="form-control" id="reference" placeholder="Enter CWE/CVE Reference" required>
+                                        <span class="text-danger">{{ $errors->first('reference') }}</span>
+                                    </div>
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer modal-footer">
@@ -99,8 +114,8 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-        <!-- End Modal for create new skill -->
-        <!-- Start Modal for update skill -->
+        <!-- End Modal for create new category -->
+        <!-- Start Modal for update category -->
         <div class="modal fade" id="editCategoryModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -112,6 +127,29 @@
                     </div>
                     <div class="modal-body">
                         <div class="card card-primary AddEditForm">
+
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+        <!-- End Modal for update category -->
+        <!-- Start Modal for show category -->
+        <div class="modal fade" id="detailsCategoryModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Category</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card card-primary showDetails">
 
                         </div>
                         <!-- /.card -->
@@ -175,6 +213,17 @@
         }).done(function(data) {
             $('.AddEditForm').html(data.editCategory);
             $('#editCategoryModal').modal('show');
+        });
+    }
+
+    function categoryDetails(id) {
+        var url = "{{url('/report/category/show')}}/" + id;
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).done(function(data) {
+            $('.showDetails').html(data.showCategory);
+            $('#detailsCategoryModal').modal('show');
         });
     }
 

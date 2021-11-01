@@ -28,13 +28,13 @@
         }
     }
 
-    .cpyBtn {
+    .cpyBtnParent {
         height: 30px;
     }
 
     button {
         display: none;
-        float: left;
+        float: right;
         border: none;
         margin-right: 10px;
     }
@@ -263,94 +263,103 @@
 
     });
 </script>
+<script>
+    // Add attachment files
+    $('#attachment-files').on('change', function(ev) {
+        if (this.files) {
+            var filesAmount = this.files.length;
+            var tblArr = [];
+            for (i = 0; i < filesAmount; i++) {
+                var filedata = this.files[i];
+                var imgtype = filedata.type;
 
+                var match = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                if (!(imgtype == match[0]) || (imgtype == match[1]) || (imgtype == match[2])) {
+                    $('#mgs_ta').html('<p style="color:red">Plz select a valid type image..only jpg jpeg allowed</p>');
+
+                } else {
+                    $('#mgs_ta').empty();
+                    //---image preview
+
+                    var reader = new FileReader();
+                    reader.readAsDataURL(this.files[i]);
+
+                    // upload files
+                    var postData = new FormData();
+                    postData.append('file', this.files[i]);
+
+                    var url = "{{url('researcher/report/files/upload')}}";
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        async: true,
+                        type: "post",
+                        contentType: false,
+                        url: url,
+                        data: postData,
+                        processData: false,
+                    }).done(function(data) {
+                        var tddata = '';
+                        for (var x = 0; x < data.images.length; x++) {
+                            tddata +=
+                                '<tr>' +
+                                '<td class="cpyBtnParent"><div class="btntxt">' + data.images[x]['code'] + '</div><button type="button" class="cpyBtn">Copy text</button></td>' +
+                                '<td>' + data.images[x]['original_name'] + '</td>' +
+                                '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                                '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
+                                '</tr>';
+                        };
+
+                        $(".dropify-clear").click();
+                        var createHtml = '<div class="">' +
+                            '<table class="table">' +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th scope="col">code</th><th scope="col">Name</th><th>Image</th><th>Action</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>' +
+                            tddata + '</tbody>' +
+                            '</table>'
+                        $('#img_prv').html(createHtml);
+                    });
+                }
+            }
+        }
+    });
+</script>
 <script>
     $(document).ready(function() {
+
         //Show Copy Button
-        $(document).on('mouseenter', '.cpyBtn', function() {
+        $(document).on('mouseenter', '.cpyBtnParent', function() {
             $(this).find(":button").show();
-        }).on('mouseleave', '.cpyBtn', function() {
+        }).on('mouseleave', '.cpyBtnParent', function() {
             $(this).find(":button").hide();
         });
         // Add dropify class
         $('.dropify').dropify();
 
-        // Add attachment files
-        $('#attachment-files').on('change', function(ev) {
-            if (this.files) {
-                var filesAmount = this.files.length;
-                var tblArr = [];
-                for (i = 0; i < filesAmount; i++) {
-                    var filedata = this.files[i];
-                    var imgtype = filedata.type;
-
-                    var match = ['image/jpeg', 'image/jpg', 'image/png'];
-
-                    if (!(imgtype == match[0]) || (imgtype == match[1]) || (imgtype == match[2])) {
-                        $('#mgs_ta').html('<p style="color:red">Plz select a valid type image..only jpg jpeg allowed</p>');
-
-                    } else {
-                        $('#mgs_ta').empty();
-                        //---image preview
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(this.files[i]);
-
-                        // upload files
-                        var postData = new FormData();
-                        postData.append('file', this.files[i]);
-
-                        var url = "{{url('researcher/report/files/upload')}}";
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                        $.ajax({
-                            async: true,
-                            type: "post",
-                            contentType: false,
-                            url: url,
-                            data: postData,
-                            processData: false,
-                        }).done(function(data) {
-                            var tddata = '';
-                            for (var x = 0; x < data.images.length; x++) {
-                                tddata +=
-                                    '<tr>' +
-                                    '<td class="copyImageCode">' + data.images[x]['code'] + '</td>' +
-                                    '<td>' + data.images[x]['original_name'] + '</td>' +
-                                    '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
-                                    '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
-                                    '</tr>';
-                            };
-
-                            $(".dropify-clear").click();
-                            var createHtml = '<div class="">' +
-                                '<table class="table">' +
-                                '<thead>' +
-                                '<tr>' +
-                                '<th scope="col">code</th><th scope="col">Name</th><th>Image</th><th>Action</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>' +
-                                tddata + '</tbody>' +
-                                '</table>'
-                            $('#img_prv').html(createHtml);
-                        });
-                    }
-                }
-            }
+        // Copy code
+        $(".cpyBtn").click(function() {
+            copyCode();
         });
 
-        // Copy code
-        $('body').on('click', '.copyImageCode', function() {
+        $('body').on('click', '.cpyBtnParent .cpyBtn', function() {
             /* Get the text field */
-            console.log("Here");
-            var copyText = $(".copyImageCode").text();
-            console.log(copyText);
-            /* Select the text field */
+            _parent = $(this).parents('.cpyBtnParent');
+            var copyText = '[' + _parent.children(".btntxt").text() + ']';
+
+            copyText.value = text;
+            document.body.appendChild(copyText);
+
             copyText.select();
+            /* Select the text field */
+            testString.select();
             copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
             /* Copy the text inside the text field */

@@ -6,6 +6,7 @@ use App\User;
 use App\Scope;
 use App\Skill;
 use App\Organization;
+use App\ProjectReport;
 use App\OrganizationMember;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +28,7 @@ class Project extends Model
         'updated_at'
     ];
 
-    
+
 
     public function organization()
     {
@@ -57,5 +58,10 @@ class Project extends Model
     public function project_scopes()
     {
         return $this->hasMany(ProjectScope::class);
+    }
+
+    public function project_reports()
+    {
+        return $this->hasMany(ProjectReport::class);
     }
 }

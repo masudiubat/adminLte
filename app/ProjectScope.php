@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scope;
+use App\ProjectReport;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectScope extends Model
@@ -25,5 +26,10 @@ class ProjectScope extends Model
     public function scope()
     {
         return $this->belongsTo(Scope::class);
+    }
+
+    public function project_reports()
+    {
+        return $this->hasMany(ProjectReport::class);
     }
 }

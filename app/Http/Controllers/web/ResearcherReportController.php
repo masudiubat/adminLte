@@ -5,9 +5,12 @@ namespace App\Http\Controllers\web;
 use App\Project;
 use App\ReportImage;
 use App\ProjectScope;
+use App\ProjectReport;
 use App\ReportCategory;
 use Illuminate\Support\Str;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use App\Library\ActivityLogLib;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +48,7 @@ class ResearcherReportController extends Controller
                 $query->where('user_id', $userId);
             })
             ->whereDate('start_date', '<=', date("Y-m-d"))->whereDate('end_date', '>=', date("Y-m-d"))
-            ->where('is_approved', 0)
+            ->where('is_approved', 1)
             ->where('status', 'active')
             ->get();
 
@@ -83,12 +86,109 @@ class ResearcherReportController extends Controller
         $images = ReportImage::where('user_id', $id)->get();
         return response()->json(['images' => $images], 200);
     }
+
+    /**
+     * Store report
+     */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'project' => 'required',
+            'scope' => 'required',
+            'title' => 'required',
+            'category' => 'required',
+            'url' => 'required',
+            'description' => 'required',
+            'reproduce' => 'required',
+            'security_impact' => 'required',
+            'recommendation' => 'required'
+        ], [
+            'project.required' => 'No project selected.',
+            'scope.required' => 'No scope selected.',
+            'title.required' => 'Write a title, title field is blank.',
+            'category.required' => 'Report category not selected.',
+            'url.required' => 'Url filed is blank.',
+            'description.required' => 'Description field is required.',
+            'reproduce.required' => 'Reproduce field is required.',
+            'security_impact.required' => 'Security impact is required',
+            'recommendation.required' => 'Recommendation is required'
+        ]);
+
+        $report = new ProjectReport();
+        $report->user_id = Auth::user()->id;
+
+        if ($request->has('project')) {
+            $report->project_id = $request->input('project');
+        }
+
+        if ($request->has('scope')) {
+            $report->project_scope_id = $request->input('scope');
+        }
+
+        if ($request->has('category')) {
+            $report->report_category_id = $request->input('category');
+        }
+
+        if ($request->has('title')) {
+            $report->title = $request->input('title');
+        }
+
+        if ($request->has('url')) {
+            $report->vulnerability_location = $request->input('url');
+        }
+
+        if ($request->has('description')) {
+            $report->description = $request->input('description');
+        }
+
+        if ($request->has('reproduce')) {
+            $report->step_to_reproduce = $request->input('reproduce');
+        }
+
+        if ($request->has('security_impact')) {
+            $report->security_impact = $request->input('security_impact');
+        }
+
+        if ($request->has('recommendation')) {
+            $report->recommended_fix = $request->input('recommendation');
+        }
+
+        $report->created_at = date('Y-m-d');
+
+        $createReport = $report->save();
+
+        if ($createReport) {
+            ActivityLogLib::addLog('Researcher has created a new report named ' . $report->title . ' successfully.', 'success');
+            Toastr::success('New report named ' . $report->title . ' has created successfully.', 'success');
+            return redirect()->back();
+        } else {
+            ActivityLogLib::addLog('User has tried to create new report but failed.', 'error');
+            Toastr::error('W00ps! Something went wrong. Try again.', 'error');
+            return redirect()->back();
+        }
+        /*
         echo "<pre>";
         print_r($request->all());
+        $template = $request->input('description');
+        $content =  substr($template, strpos($template, "["), 8);
+        $code = substr($content, 1, 6);
+        $image = ReportImage::where('code', $code)->first();
+        echo $image->original_name;
+        */
     }
 
+    public function replacement($string, array $placeholders)
+    {
+        $resultString = $string;
+        foreach ($placeholders as $key => $value) {
+            $resultString = str_replace('[' . $key . ']', trim($value), $resultString, $i);
+        }
+        return $resultString;
+    }
+
+    /**
+     *  Delete temp image for db
+     */
     public function temp_image_delete($id)
     {
         $image = ReportImage::findOrFail($id);

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Customer;
 use App\ReportImage;
+use App\ProjectReport;
 use App\OrganizationMember;
 use App\Mail\UserVerificationEmail;
 use Illuminate\Support\Facades\Mail;
@@ -77,5 +78,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function report_images()
     {
         return $this->hasMany(ReportImage::class);
+    }
+
+    public function project_reports()
+    {
+        return $this->hasMany(ProjectReport::class);
     }
 }

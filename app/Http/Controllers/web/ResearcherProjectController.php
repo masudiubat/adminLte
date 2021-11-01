@@ -69,6 +69,18 @@ class ResearcherProjectController extends Controller
         return view('pages.project.researcher.unapprove-projects-index', ['projects' => $projects]);
     }
 
+    public function archieve_project()
+    {
+        $userId = Auth::user()->id;
+
+        $projects = Project::with('organization', 'organization_members', 'skills', 'moderator', 'users', 'project_scopes')
+            ->whereHas('users', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->get();
+        return view('pages.project.researcher.archieve-projects-index', ['projects' => $projects]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

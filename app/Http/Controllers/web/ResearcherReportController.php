@@ -8,10 +8,11 @@ use App\ProjectScope;
 use App\ProjectReport;
 use App\ReportCategory;
 use Illuminate\Support\Str;
-use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use App\Library\ActivityLogLib;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 
 class ResearcherReportController extends Controller
@@ -23,7 +24,15 @@ class ResearcherReportController extends Controller
      */
     public function index()
     {
-        //
+        $userId = Auth::user()->id;
+        $reports = ProjectReport::with('project', 'user')
+            ->whereHas('user', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
+        ActivityLogLib::addLog('User has viewed his/her all reports successfully.', 'success');
+        return view('pages.report.researcher.index', ['reports' => $reports]);
     }
 
     /**
@@ -208,7 +217,13 @@ class ResearcherReportController extends Controller
      */
     public function show($id)
     {
-        //
+        $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
+        $description = $this->shortcodet_to_image_url($report->description);
+        $impact = $this->shortcodet_to_image_url($report->security_impact);
+        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
+
+        ActivityLogLib::addLog('User has viewed report successfully.', 'success');
+        return view('pages.report.researcher.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
     }
 
     /**
@@ -243,5 +258,46 @@ class ResearcherReportController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function shortcodet_to_image_url($contentget)
+    {
+        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
+
+        if ($results === false || $results === 0) {
+            return $contentget;
+        }
+
+        [$placeholders, $figureids] = $matches;
+
+        $figureArr = array();
+        foreach ($figureids as $figure) {
+            $code = preg_replace('/<[^>]*>/', '', $figure);
+            $figureArr[] = $code;
+        }
+
+        $placeHolderArr = array();
+        foreach ($placeholders as $placeholder) {
+            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
+        }
+
+        $figures = ReportImage::query()
+            ->whereIn('code', $figureArr)
+            ->get();
+
+        if ($figures->isEmpty()) {
+            return $contentget;
+        }
+
+        foreach ($placeHolderArr as $index => $placeholder) {
+            if ($figures) {
+                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
+                    ->replace('##URL##', 'http://127.0.0.1:8000/images/temp/' . $figures[$index]['name'])
+                    ->replace('##ALT##', $figures[$index]['alt']);
+
+                $contentget = str_replace($placeholders[$index], $content, $contentget);
+            }
+        }
+        return $contentget;
     }
 }

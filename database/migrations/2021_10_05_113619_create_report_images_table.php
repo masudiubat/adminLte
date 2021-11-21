@@ -19,6 +19,8 @@ class CreateReportImagesTable extends Migration
             $table->string('code')->nullable();
             $table->string('name');
             $table->string('original_name');
+            $table->string('url')->nullable();
+            $table->string('alt')->nullable();
             $table->tinyInteger('status')->default('1');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');

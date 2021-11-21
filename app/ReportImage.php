@@ -13,6 +13,8 @@ class ReportImage extends Model
         'code',
         'name',
         'original_name',
+        'url',
+        'alt',
         'status',
         'created_at',
         'updated_at'

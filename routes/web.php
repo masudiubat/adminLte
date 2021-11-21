@@ -149,6 +149,11 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::delete('/admin/project/destroy/{id}', 'web\AdminProjectController@destroy')->name('admin.project.destroy')->middleware(['role:admin']);
 
     /**
+     *  Admin check report related routes
+     */
+    Route::get('/admin/report', 'web\AdminProjectReportController@index')->name('admin.report')->middleware(['role:admin']);
+    Route::get('/admin/report/show/{id}', 'web\AdminProjectReportController@show')->name('admin.report.show')->middleware(['role:admin']);
+    /**
      * Researcher routes
      */
     Route::get('/client/project/index', 'web\ClientProjectController@index')->name('client.project.index')->middleware(['role:client']);
@@ -174,4 +179,6 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher']);
     Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher']);
     Route::get('/temp/image/delete/{id}', 'web\ResearcherReportController@temp_image_delete')->name('temp.image.delete')->middleware(['role:admin|researcher']);
+    Route::get('/researcher/all/reports', 'web\ResearcherReportController@index')->name('researcher.all.reports')->middleware(['role:researcher']);
+    Route::get('/researcher/report/show/{id}', 'web\ResearcherReportController@show')->name('researcher.report.show')->middleware(['role:researcher']);
 });

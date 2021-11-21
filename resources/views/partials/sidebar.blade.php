@@ -57,6 +57,12 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item">
+                <a href="{{route('admin.report')}}" class="{{ request()->routeIs('admin.report*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-bug"></i>
+                    <p>Reports</p>
+                </a>
+            </li>
             @endhasanyrole
             @hasanyrole('researcher')
             <li class="{{ request()->routeIs('researcher.project*') ? 'nav-item menu-open' : 'nav-item' }}">
@@ -104,6 +110,12 @@
                 <a href="{{route('researcher.new.report')}}" class="{{ request()->routeIs('researcher.new.report*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-bug"></i>
                     <p>New Report </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('researcher.all.reports')}}" class="{{ request()->routeIs('researcher.all.reports*') || request()->routeIs('researcher.report.show*') ? 'nav-link active' : 'nav-link' }}">
+                <i class="nav-icon fas fa-file"></i>
+                    <p>All Reports </p>
                 </a>
             </li>
             @endhasanyrole

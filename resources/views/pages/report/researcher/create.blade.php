@@ -353,9 +353,7 @@
             /* Get the text field */
             _parent = $(this).parents('.cpyBtnParent');
             var copyText = '[' + _parent.children(".btntxt").text() + ']';
-
-            copyText.value = text;
-            document.body.appendChild(copyText);
+            console.log(copyText);
 
             copyText.select();
             /* Select the text field */

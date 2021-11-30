@@ -7,6 +7,13 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+<style>
+    table.table-bordered.dataTable tbody th,
+    table.table-bordered.dataTable tbody td {
+        padding: 5px;
+        padding-left: 5px;
+    }
+</style>
 @endpush
 @section('breadcrumb')
 <li class="breadcrumb-item active">Reports</li>
@@ -35,12 +42,12 @@
                         @foreach($reports as $key => $report)
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td>{{ $report->project->title }}</td>
-                            <td>{{ $report->title }}</td>
-                            <td>{{ $report->created_at }}</td>
+                            <td>{{ substr($report->project->title, 0, 60) }}...</td>
+                            <td>{{ substr($report->title, 0, 60) }}...</td>
+                            <td>{{ date('jS F, y', strtotime($report->created_at)) }}</td>
                             <td>
-                                <a href="{{route('admin.report.show', $report->id)}}" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
-                                <a onclick="event.preventDefault(); editCategory('{{ $report->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                <a href="{{route('admin.report.show', $report->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
                                 <a href="#" onclick="event.preventDefault(); deleteCategory('{{$report->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
                                 <form id="delete-category-{{ $report->id }}" action="{{route('report.category.destroy', $report->id)}}" method="POST" style="display: none;">
@@ -189,6 +196,7 @@
             "lengthChange": false,
             "autoWidth": false,
             "ordering": false,
+
             /*"buttons": ["csv", "excel", "pdf", "print"] */
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $('#example2').DataTable({

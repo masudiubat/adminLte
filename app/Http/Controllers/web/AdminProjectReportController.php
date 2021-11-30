@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\web;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Project;
+use App\ReportImage;
 use App\ProjectReport;
+use App\ReportCategory;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Library\ActivityLogLib;
+use App\Http\Controllers\Controller;
 
 class AdminProjectReportController extends Controller
 {
@@ -26,7 +31,16 @@ class AdminProjectReportController extends Controller
      */
     public function create()
     {
-        //
+        $projects = Project::with('organization', 'project_scopes')
+            ->whereDate('start_date', '<=', date("Y-m-d"))
+            ->whereDate('end_date', '>=', date("Y-m-d"))
+            ->where('is_approved', 1)
+            ->where('status', 'active')
+            ->get();
+
+        $categories = ReportCategory::all();
+
+        return view('pages.report.admin.create', ['projects' => $projects, 'categories' => $categories]);
     }
 
     /**
@@ -49,18 +63,12 @@ class AdminProjectReportController extends Controller
     public function show($id)
     {
         $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
+        $description = $this->shortcodet_to_image_url($report->description);
+        $impact = $this->shortcodet_to_image_url($report->security_impact);
+        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
 
-
-        if (preg_match('/[\[\]\'^£$%&*()}{@#~?><>,|=_+¬-]/', $report->security_impact)) {
-            preg_match_all("/\[([^\]]*)\]/", $report->security_impact, $codes);
-            var_dump($codes[0]);
-            echo 'has Image';
-        } else {
-            echo 'No iamge';
-        }
-
-        die();
-        return view('pages.report.admin.show', ['report' => $report]);
+        ActivityLogLib::addLog('User has viewed report successfully.', 'success');
+        return view('pages.report.admin.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
     }
 
     /**
@@ -71,7 +79,19 @@ class AdminProjectReportController extends Controller
      */
     public function edit($id)
     {
-        //
+        $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
+
+        $projects = Project::with('organization', 'project_scopes')
+            ->whereDate('start_date', '<=', date("Y-m-d"))
+            ->whereDate('end_date', '>=', date("Y-m-d"))
+            ->where('is_approved', 1)
+            ->where('status', 'active')
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        $categories = ReportCategory::all();
+
+        return view('pages.report.admin.edit', ['report' => $report, 'projects' => $projects, 'categories' => $categories]);
     }
 
     /**
@@ -95,5 +115,46 @@ class AdminProjectReportController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function shortcodet_to_image_url($contentget)
+    {
+        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
+
+        if ($results === false || $results === 0) {
+            return $contentget;
+        }
+
+        [$placeholders, $figureids] = $matches;
+
+        $figureArr = array();
+        foreach ($figureids as $figure) {
+            $code = preg_replace('/<[^>]*>/', '', $figure);
+            $figureArr[] = $code;
+        }
+
+        $placeHolderArr = array();
+        foreach ($placeholders as $placeholder) {
+            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
+        }
+
+        $figures = ReportImage::query()
+            ->whereIn('code', $figureArr)
+            ->get();
+
+        if ($figures->isEmpty()) {
+            return $contentget;
+        }
+
+        foreach ($placeHolderArr as $index => $placeholder) {
+            if ($figures) {
+                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
+                    ->replace('##URL##', 'http://127.0.0.1:8000/storage/reports/' . $figures[$index]['name'])
+                    ->replace('##ALT##', $figures[$index]['alt']);
+
+                $contentget = str_replace($placeholders[$index], $content, $contentget);
+            }
+        }
+        return $contentget;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\web;
 
+use PDF;
+use File;
 use App\Project;
 use App\ReportImage;
 use App\ProjectScope;
@@ -80,7 +82,7 @@ class ResearcherReportController extends Controller
             $image = $request->file('file');
             $originalName = $image->getClientOriginalName();
             $newActionName = $random . '.' . $image->getClientOriginalExtension();
-            $destinationPath = 'images/temp';
+            $destinationPath = 'report';
             $image->move($destinationPath, $newActionName);
 
             // save image details
@@ -227,6 +229,23 @@ class ResearcherReportController extends Controller
     }
 
     /**
+     * Downlaod pdf report
+     * 
+     */
+    public function dwonlaod_pdf($id)
+    {
+        $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
+        $description = $this->shortcodet_to_image_url($report->description);
+        $impact = $this->shortcodet_to_image_url($report->security_impact);
+        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
+
+        //ActivityLogLib::addLog('User has downlaoded pdf format report successfully.', 'success');
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pages.download.report', compact(['recommended', 'impact', 'report', 'description']))->setOptions(['defaultFont' => 'sans-serif']);
+        //return view('pages.download.report', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
+        return $pdf->download('report.pdf');
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -234,7 +253,19 @@ class ResearcherReportController extends Controller
      */
     public function edit($id)
     {
-        //
+        $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
+
+        $projects = Project::with('organization', 'project_scopes')
+            ->whereDate('start_date', '<=', date("Y-m-d"))
+            ->whereDate('end_date', '>=', date("Y-m-d"))
+            ->where('is_approved', 1)
+            ->where('status', 'active')
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        $categories = ReportCategory::all();
+
+        return view('pages.report.admin.edit', ['report' => $report, 'projects' => $projects, 'categories' => $categories]);
     }
 
     /**
@@ -292,7 +323,48 @@ class ResearcherReportController extends Controller
         foreach ($placeHolderArr as $index => $placeholder) {
             if ($figures) {
                 $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
-                    ->replace('##URL##', 'http://127.0.0.1:8000/images/temp/' . $figures[$index]['name'])
+                    ->replace('##URL##', 'http://127.0.0.1:8000/storage/reports/' . $figures[$index]['name'])
+                    ->replace('##ALT##', $figures[$index]['alt']);
+
+                $contentget = str_replace($placeholders[$index], $content, $contentget);
+            }
+        }
+        return $contentget;
+    }
+
+    public function shortcodet_to_pdf_image_url($contentget)
+    {
+        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
+
+        if ($results === false || $results === 0) {
+            return $contentget;
+        }
+
+        [$placeholders, $figureids] = $matches;
+
+        $figureArr = array();
+        foreach ($figureids as $figure) {
+            $code = preg_replace('/<[^>]*>/', '', $figure);
+            $figureArr[] = $code;
+        }
+
+        $placeHolderArr = array();
+        foreach ($placeholders as $placeholder) {
+            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
+        }
+
+        $figures = ReportImage::query()
+            ->whereIn('code', $figureArr)
+            ->get();
+
+        if ($figures->isEmpty()) {
+            return $contentget;
+        }
+
+        foreach ($placeHolderArr as $index => $placeholder) {
+            if ($figures) {
+                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
+                    ->replace('##URL##', 'http://127.0.0.1:8000/images/reports/' . $figures[$index]['name'])
                     ->replace('##ALT##', $figures[$index]['alt']);
 
                 $contentget = str_replace($placeholders[$index], $content, $contentget);

@@ -55,18 +55,13 @@
             <div class="card-header">
                 <h3 class="card-title">Report</h3>
                 <div class="text-right pull-right">
-                    <a class="btn btn-sm btn-default">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                    <a class="btn btn-sm btn-default">
-                        <i class="fas fa-file-word"></i> MS Word
+                    <a href="{{route('researcher.report.pdf.download', $report->id)}}" class="btn btn-sm btn-default">
+                        <i class="fas fa-file-pdf"></i> PDF Download
                     </a>
                 </div>
             </div>
 
-
             <div class="card-body">
-
                 <a name="executive-summery" class="internal">
                     <h2>Executive Summary</h2>
                 </a>

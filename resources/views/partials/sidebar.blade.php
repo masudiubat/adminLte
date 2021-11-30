@@ -22,6 +22,35 @@
     with font-awesome or any other icon font library -->
             <li class="nav-header">PRIMARY TOOLS</li>
             @hasanyrole('admin')
+            <li class="{{ request()->routeIs('admin.report*') ? 'nav-item menu-open' : 'nav-item' }}">
+                <a href="#" class="{{ request()->routeIs('admin.report*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-bug"></i>
+                    <p>
+                        Reports
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{route('admin.report.create')}}" class="{{ request()->routeIs('admin.report.create*') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>New Report </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('admin.report.current') }}" class="{{ request()->routeIs('admin.report.current') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Current Report</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('admin.project.archieve') }}" class="{{ request()->routeIs('admin.project.archieve') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Archieve</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li class="{{ request()->routeIs('admin.project*') ? 'nav-item menu-open' : 'nav-item' }}">
                 <a href="#" class="{{ request()->routeIs('admin.project*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
@@ -56,12 +85,6 @@
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="nav-item">
-                <a href="{{route('admin.report')}}" class="{{ request()->routeIs('admin.report*') ? 'nav-link active' : 'nav-link' }}">
-                    <i class="nav-icon fas fa-bug"></i>
-                    <p>Reports</p>
-                </a>
             </li>
             @endhasanyrole
             @hasanyrole('researcher')
@@ -114,7 +137,7 @@
             </li>
             <li class="nav-item">
                 <a href="{{route('researcher.all.reports')}}" class="{{ request()->routeIs('researcher.all.reports*') || request()->routeIs('researcher.report.show*') ? 'nav-link active' : 'nav-link' }}">
-                <i class="nav-icon fas fa-file"></i>
+                    <i class="nav-icon fas fa-file"></i>
                     <p>All Reports </p>
                 </a>
             </li>

@@ -54,7 +54,7 @@
             <!-- /.card-header -->
             <div class="card-body" style="padding-top: 5px;">
                 <!-- form start -->
-                <form action="{{route('researcher.report.store')}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('admin.report.store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -309,7 +309,7 @@
                                 '<tr>' +
                                 '<td class="cpyBtnParent"><div class="btntxt">' + data.images[x]['code'] + '</div><button type="button" class="cpyBtn">Copy text</button></td>' +
                                 '<td>' + data.images[x]['original_name'] + '</td>' +
-                                '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                                '<td><img src="http://127.0.0.1:8000/reports/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
                                 '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
                                 '</tr>';
                         };
@@ -326,6 +326,7 @@
                             tddata + '</tbody>' +
                             '</table>'
                         $('#img_prv').html(createHtml);
+                        console.log(storage_path());
                     });
                 }
             }

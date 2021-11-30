@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'New Report')
+@section('title', 'Update Report')
 
 @push('css')
 <!-- summernote -->
@@ -41,7 +41,7 @@
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">New Report</li>
+<li class="breadcrumb-item active">Update Report</li>
 @endsection
 
 @section('content')
@@ -49,12 +49,12 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">New Report</h3>
+                <h3 class="card-title">Update Report</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body" style="padding-top: 5px;">
                 <!-- form start -->
-                <form action="{{route('researcher.report.store')}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('admin.report.update', $report->id)}}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -65,7 +65,7 @@
                                     <option value="">Select Project</option>
                                     @if(!is_null($projects))
                                     @foreach($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->title }}</option>
+                                    <option value="{{ $project->id }}" {{ $report->project_id == $project->id ? 'selected' : '' }}>{{ $project->title }}</option>
                                     @endforeach
                                     @endif
                                 </select>
@@ -86,7 +86,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        @if($report->project->project_scopes)
+                                        @foreach($report->project->project_scopes as $scope)
+                                        <tr>
+                                            <td><input type="radio" id="scopeId" name="scope" value="{{$scope->id}}" {{ $scope->id == $report->project_scope_id ? 'checked' : '' }}></td>
+                                            <td>{{ $scope->scope->name }}</td>
+                                            <td>{{ $scope->terget_url }}</td>
+                                            <td>{{ $scope->comment }}</td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -96,7 +105,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="title">Report Title</label>
-                                <input type="text" name="title" id="title" value="" class="form-control">
+                                <input type="text" name="title" id="title" value="{{ $report->title }}" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -108,7 +117,7 @@
                                     <option value="">Select Category</option>
                                     @if(!is_null($categories))
                                     @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ $report->report_category_id == $category->id ? 'selected' : ''}}>{{ $category->name }}</option>
                                     @endforeach
                                     @endif
                                 </select>
@@ -120,7 +129,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="url">URL/Location of Vulnerability</label>
-                                <input type="text" name="url" id="url" class="form-control">
+                                <input type="text" name="url" id="url" value="{{ $report->vulnerability_location }}" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -128,7 +137,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="description">Description <br /><small> Describe the vulnerability, and provide a Proof of Concept. How would you fix it? </small></label>
-                                <textarea class="form-control summernote" name="description" id="description"></textarea>
+                                <textarea class="form-control summernote" name="description" id="description">{!! $report->description !!}</textarea>
                             </div>
                         </div>
                     </div>
@@ -136,7 +145,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="reproduce">Steps to Reproduce <br /><small> Describe how to reproduce the vulnerability </small></label>
-                                <textarea class="form-control summernote" name="reproduce" id="reproduce"></textarea>
+                                <textarea class="form-control summernote" name="reproduce" id="reproduce">{!! $report->step_to_reproduce !!}</textarea>
                             </div>
                         </div>
                     </div>
@@ -144,7 +153,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="security_impact">Security Impact</label>
-                                <textarea class="form-control summernote" name="security_impact" id="security_impact"></textarea>
+                                <textarea class="form-control summernote" name="security_impact" id="security_impact">{!! $report->security_impact !!}</textarea>
                             </div>
                         </div>
                     </div>
@@ -153,7 +162,7 @@
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="recommendation">Recommended Fix <br /><small> Brief description with Objective, Scope, Rules and Instruction </small></label>
-                                <textarea class="form-control summernote" name="recommendation" id="recommendation"></textarea>
+                                <textarea class="form-control summernote" name="recommendation" id="recommendation">{!! $report->recommended_fix !!}</textarea>
                             </div>
                         </div>
                     </div>

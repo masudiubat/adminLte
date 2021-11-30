@@ -54,9 +54,17 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Report</h3>
+                <div class="text-right pull-right">
+                    <a href="{{route('researcher.report.pdf.download', $report->id)}}" class="btn btn-sm btn-default">
+                        <i class="fas fa-file-pdf"></i> PDF Download
+                    </a>
+                    <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-sm btn-default">
+                        <i class="fas fa-edit"></i> Edit Report
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
 
+            <div class="card-body">
                 <a name="executive-summery" class="internal">
                     <h2>Executive Summary</h2>
                 </a>
@@ -205,18 +213,15 @@
                 </table>
 
                 <h3 style="margin-top: 40px">Description</h3>
-                <p>Lorem ipsum represents a long-held tradition for designers, typographers and the like. Some people hate it and argue for its demise, but others ignore.</p>
-
+                {!! $description !!}
                 <h3>Steps to Reproduce</h3>
                 <p>Lorem ipsum represents a long-held tradition for designers, typographers and the like. Some people hate it and argue for its demise, but others ignore.</p>
 
                 <h3>Impact</h3>
-                <p>Lorem ipsum represents a long-held tradition for designers, typographers and the like. Some people hate it and argue for its demise, but others ignore.</p>
+                {!! $impact !!}
 
                 <h3>Recommended Fix</h3>
-                <p>Lorem ipsum represents a long-held tradition for designers, typographers and the like. Some people hate it and argue for its demise, but others ignore.</p>
-
-
+                {!! $recommended !!}
 
             </div>
         </div>

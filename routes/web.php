@@ -151,8 +151,12 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     /**
      *  Admin check report related routes
      */
-    Route::get('/admin/report', 'web\AdminProjectReportController@index')->name('admin.report')->middleware(['role:admin']);
+    Route::get('/admin/report/create', 'web\AdminProjectReportController@create')->name('admin.report.create')->middleware(['role:admin']);
+    Route::post('/admin/report/store', 'web\AdminProjectReportController@store')->name('admin.report.store')->middleware(['role:admin']);
+    Route::get('/admin/report/current', 'web\AdminProjectReportController@index')->name('admin.report.current')->middleware(['role:admin']);
     Route::get('/admin/report/show/{id}', 'web\AdminProjectReportController@show')->name('admin.report.show')->middleware(['role:admin']);
+    Route::get('/admin/report/edit/{id}', 'web\AdminProjectReportController@edit')->name('admin.report.edit')->middleware(['role:admin']);
+    Route::post('/admin/report/update/{id}', 'web\AdminProjectReportController@update')->name('admin.report.update')->middleware(['role:admin']);
     /**
      * Researcher routes
      */
@@ -174,11 +178,13 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     /**
      * Researcher Report related routes
      */
-    Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher']);
-    Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher']);
-    Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher']);
-    Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher']);
+    Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher|admin']);
+    Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher|admin']);
+    Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher|admin']);
+    Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher|admin']);
     Route::get('/temp/image/delete/{id}', 'web\ResearcherReportController@temp_image_delete')->name('temp.image.delete')->middleware(['role:admin|researcher']);
-    Route::get('/researcher/all/reports', 'web\ResearcherReportController@index')->name('researcher.all.reports')->middleware(['role:researcher']);
-    Route::get('/researcher/report/show/{id}', 'web\ResearcherReportController@show')->name('researcher.report.show')->middleware(['role:researcher']);
+    Route::get('/researcher/all/reports', 'web\ResearcherReportController@index')->name('researcher.all.reports')->middleware(['role:researcher|admin']);
+    Route::get('/researcher/report/show/{id}', 'web\ResearcherReportController@show')->name('researcher.report.show')->middleware(['role:researcher|admin']);
+    Route::get('/researcher/report/edit/{id}', 'web\ResearcherReportController@edit')->name('researcher.report.edit')->middleware(['role:researcher']);
+    Route::get('/researcher/report/pdf/download/{id}', 'web\ResearcherReportController@dwonlaod_pdf')->name('researcher.report.pdf.download')->middleware(['role:researcher|admin']);
 });

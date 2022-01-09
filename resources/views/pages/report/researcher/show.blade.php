@@ -45,7 +45,8 @@
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Report</li>
+<li class="breadcrumb-item"><a href="{{route('researcher.all.reports')}}">Report</a></li>
+<li class="breadcrumb-item active">Details</li>
 @endsection
 
 @section('content')

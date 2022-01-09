@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ResearcherReportController extends Controller
 {
@@ -82,7 +83,7 @@ class ResearcherReportController extends Controller
             $image = $request->file('file');
             $originalName = $image->getClientOriginalName();
             $newActionName = $random . '.' . $image->getClientOriginalExtension();
-            $destinationPath = 'report';
+            $destinationPath = 'storage/reports';
             $image->move($destinationPath, $newActionName);
 
             // save image details
@@ -203,6 +204,10 @@ class ResearcherReportController extends Controller
     public function temp_image_delete($id)
     {
         $image = ReportImage::findOrFail($id);
+        $path = storage_path('app/public/reports/');
+        if ($image && file_exists($path . $image->name)) {
+            Storage::delete($path . $image->name);
+        }
         $deleteImge = $image->delete();
         $userId = Auth::user()->id;
         if ($deleteImge) {
@@ -322,7 +327,7 @@ class ResearcherReportController extends Controller
 
         foreach ($placeHolderArr as $index => $placeholder) {
             if ($figures) {
-                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
+                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="300px"><br/>')
                     ->replace('##URL##', 'http://127.0.0.1:8000/storage/reports/' . $figures[$index]['name'])
                     ->replace('##ALT##', $figures[$index]['alt']);
 

@@ -25,6 +25,7 @@ class ProjectReport extends Model
         'cvss',
         'severity',
         'is_approved',
+        'is_archive',
         'created_at',
         'updated_at'
     ];

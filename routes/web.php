@@ -151,12 +151,15 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     /**
      *  Admin check report related routes
      */
-    Route::get('/admin/report/create', 'web\AdminProjectReportController@create')->name('admin.report.create')->middleware(['role:admin']);
-    Route::post('/admin/report/store', 'web\AdminProjectReportController@store')->name('admin.report.store')->middleware(['role:admin']);
-    Route::get('/admin/report/current', 'web\AdminProjectReportController@index')->name('admin.report.current')->middleware(['role:admin']);
-    Route::get('/admin/report/show/{id}', 'web\AdminProjectReportController@show')->name('admin.report.show')->middleware(['role:admin']);
-    Route::get('/admin/report/edit/{id}', 'web\AdminProjectReportController@edit')->name('admin.report.edit')->middleware(['role:admin']);
-    Route::post('/admin/report/update/{id}', 'web\AdminProjectReportController@update')->name('admin.report.update')->middleware(['role:admin']);
+    Route::get('/admin/report/create', 'web\AdminProjectReportController@create')->name('admin.report.create')->middleware(['role:admin|moderator']);
+    Route::post('/admin/report/store', 'web\AdminProjectReportController@store')->name('admin.report.store')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/current', 'web\AdminProjectReportController@index')->name('admin.report.current')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/show/{id}', 'web\AdminProjectReportController@show')->name('admin.report.show')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/edit/{id}', 'web\AdminProjectReportController@edit')->name('admin.report.edit')->middleware(['role:admin|moderator']);
+    Route::post('/admin/report/update/{id}', 'web\AdminProjectReportController@update')->name('admin.report.update')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/send/archive/{id}', 'web\AdminProjectReportController@report_send_archive')->name('admin.report.send.archive')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/send/index/{id}', 'web\AdminProjectReportController@report_send_index')->name('admin.report.send.index')->middleware(['role:admin|moderator']);
+    Route::get('/admin/report/archieve', 'web\AdminProjectReportController@archieve')->name('admin.report.archieve')->middleware(['role:admin|moderator']);
     /**
      * Researcher routes
      */

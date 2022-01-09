@@ -158,6 +158,175 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="heading">CVSS Score</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Access Vector</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessVector1" name="access_vector">
+                                            <label for="accessVector1" class="custom-control-label">Local</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessVector2" name="access_vector">
+                                            <label for="accessVector2" class="custom-control-label">Adjacent</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessVector3" name="access_vector">
+                                            <label for="accessVector3" class="custom-control-label">Network</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Access Complexity</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessComplexity1" name="access_complexity">
+                                            <label for="accessComplexity1" class="custom-control-label">Heigh</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessComplexity2" name="access_complexity">
+                                            <label for="accessComplexity2" class="custom-control-label">Medium</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="accessComplexity3" name="access_complexity">
+                                            <label for="accessComplexity3" class="custom-control-label">Low</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Authentication Type</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="authenticationType1" name="authentication_type">
+                                            <label for="authenticationType1" class="custom-control-label">Multiple</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="authenticationType2" name="authentication_type">
+                                            <label for="authenticationType2" class="custom-control-label">Single</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="authenticationType3" name="authentication_type">
+                                            <label for="authenticationType3" class="custom-control-label">None</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Confidentiality Impact</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="confidentialityImpact1" name="confidentiality_impact">
+                                            <label for="confidentialityImpact1" class="custom-control-label">None</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="confidentialityImpact2" name="confidentiality_impact">
+                                            <label for="confidentialityImpact2" class="custom-control-label">Partial</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="confidentialityImpact3" name="confidentiality_impact">
+                                            <label for="confidentialityImpact3" class="custom-control-label">Complete</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Integrity Impact</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="integrityImpact1" name="integrity_impact">
+                                            <label for="integrityImpact1" class="custom-control-label">None</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="integrityImpact2" name="integrity_impact">
+                                            <label for="integrityImpact2" class="custom-control-label">Partial</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="integrityImpact3" name="integrity_impact">
+                                            <label for="integrityImpact3" class="custom-control-label">Complete</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="recommendation">Availability Impact</label>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="availabilityImpact1" name="availability_impact">
+                                            <label for="availabilityImpact1" class="custom-control-label">None</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="availabilityImpact2" name="availability_impact">
+                                            <label for="availabilityImpact2" class="custom-control-label">Partial</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="custom-control custom-radio">
+                                            <input class="custom-control-input" type="radio" id="availabilityImpact3" name="availability_impact">
+                                            <label for="availabilityImpact3" class="custom-control-label">Complete</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
                                 <label for="recommendation">Attachment</label>
@@ -309,7 +478,7 @@
                                 '<tr>' +
                                 '<td class="cpyBtnParent"><div class="btntxt">' + data.images[x]['code'] + '</div><button type="button" class="cpyBtn">Copy text</button></td>' +
                                 '<td>' + data.images[x]['original_name'] + '</td>' +
-                                '<td><img src="http://127.0.0.1:8000/reports/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                                '<td><img src="http://127.0.0.1:8000/storage/reports/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
                                 '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
                                 '</tr>';
                         };
@@ -326,7 +495,6 @@
                             tddata + '</tbody>' +
                             '</table>'
                         $('#img_prv').html(createHtml);
-                        console.log(storage_path());
                     });
                 }
             }
@@ -393,7 +561,6 @@
                         '<td>' + data.scopes[i]['comment'] + '</td>' +
                         '</tr>';
                 };
-
                 $('tbody').html(res);
             });
 
@@ -432,7 +599,7 @@
                     '<tr>' +
                     '<td>' + data.images[x]['code'] + '</td>' +
                     '<td>' + data.images[x]['original_name'] + '</td>' +
-                    '<td><img src="http://127.0.0.1:8000/images/temp/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
+                    '<td><img src="http://127.0.0.1:8000/storage/reports/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
                     '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
                     '</tr>';
             };
@@ -450,7 +617,6 @@
                 '</table>';
             $('#img_prv').html(createHtml);
         });
-
     }
 </script>
 @endpush

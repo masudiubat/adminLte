@@ -21,7 +21,7 @@
             <!-- Add icons to the links using the .nav-icon class
     with font-awesome or any other icon font library -->
             <li class="nav-header">PRIMARY TOOLS</li>
-            @hasanyrole('admin')
+            @hasanyrole('admin|moderator')
             <li class="{{ request()->routeIs('admin.report*') ? 'nav-item menu-open' : 'nav-item' }}">
                 <a href="#" class="{{ request()->routeIs('admin.report*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-bug"></i>
@@ -44,9 +44,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{route('admin.project.archieve') }}" class="{{ request()->routeIs('admin.project.archieve') ? 'nav-link active' : 'nav-link' }}">
+                        <a href="{{route('admin.report.archieve') }}" class="{{ request()->routeIs('admin.report.archieve') ? 'nav-link active' : 'nav-link' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Archieve</p>
+                            <p>Archive</p>
                         </a>
                     </li>
                 </ul>
@@ -81,7 +81,7 @@
                     <li class="nav-item">
                         <a href="{{route('admin.project.archieve') }}" class="{{ request()->routeIs('admin.project.archieve') ? 'nav-link active' : 'nav-link' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Archieve</p>
+                            <p>Archive</p>
                         </a>
                     </li>
                 </ul>

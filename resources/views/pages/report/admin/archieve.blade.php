@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Archieve Project')
+@section('title', 'Archive')
 
 @push('css')
 <!-- DataTables -->
@@ -8,14 +8,15 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 <style>
-    .table td,
-    .table th {
-        border: 0;
+    table.table-bordered.dataTable tbody th,
+    table.table-bordered.dataTable tbody td {
+        padding: 5px;
+        padding-left: 5px;
     }
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Archieve Project</li>
+<li class="breadcrumb-item active">Archive</li>
 @endsection
 
 @section('content')
@@ -23,32 +24,32 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Archieve Project</h3>
+                <h3 class="card-title">Archive</h3>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="padding: 1.25rem 0.25rem;">
+            <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>Sl.</th>
                             <th>Project Title</th>
-                            <th>Organization Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
+                            <th>Report Title</th>
+                            <th>Submit Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($projects->reverse() as $project)
+                        @foreach($reports as $key => $report)
                         <tr>
-                            <td><a href="{{route('admin.project.show', $project->id)}}" data-toggle="tooltip" data-placement="top" title="Project Details">{{ $project->title }}</a></td>
-                            <td>@if(!is_null($project->organization)){{ $project->organization->name }}@endif</td>
-                            <td>{{ date('M d, Y', strtotime($project->start_date))}}</td>
-                            <td>{{ date('M d, Y', strtotime($project->end_date))}}</td>
+                            <td>{{ $key+1 }}</td>
+                            <td>{{ substr($report->project->title, 0, 60) }}...</td>
+                            <td>{{ substr($report->title, 0, 60) }}...</td>
+                            <td>{{ date('jS F, y', strtotime($report->created_at)) }}</td>
                             <td>
-                                <a onclick="event.preventDefault(); editProject('{{ $project->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" onclick="event.preventDefault(); deleteProject('{{$project->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                                <a href="{{route('admin.report.send.index', $report->id)}}" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Return to Index"><i class="fa fa-undo"></i></a>
+                                <a href="#" onclick="event.preventDefault(); deleteCategory('{{$report->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Permanently"><i class="fa fa-trash"></i></a>
 
-                                <form id="delete-project-{{ $project->id }}" action="{{route('admin.project.destroy', $project->id)}}" method="POST" style="display: none;">
+                                <form id="delete-category-{{ $report->id }}" action="{{route('report.category.destroy', $report->id)}}" method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -58,10 +59,10 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Project Title</th>
-                            <th>Organization Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
+                            <th>Sl.</th>
+                            <th>Project Name</th>
+                            <th>Report Title</th>
+                            <th>Submit Date</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -98,6 +99,7 @@
             "lengthChange": false,
             "autoWidth": false,
             "ordering": false,
+
             /*"buttons": ["csv", "excel", "pdf", "print"] */
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $('#example2').DataTable({
@@ -112,28 +114,32 @@
     });
 </script>
 
-<script>
-    var loadFile = function(event) {
-        var output = document.getElementById('output');
-        output.src = URL.createObjectURL(event.target.files[0]);
-        $('#output').height(150);
-    };
-</script>
 
 <script>
-    function editProject(id) {
-        var url = "{{url('/assign/organization/member/edit')}}/" + id;
+    function editCategory(id) {
+        var url = "{{url('/report/category/edit')}}/" + id;
         $.ajax({
             url: url,
             method: "GET",
         }).done(function(data) {
-            $('.AddEditForm').html(data.editOrganizationMember);
-            $('#editOrganizationMemberModal').modal('show');
+            $('.AddEditForm').html(data.editCategory);
+            $('#editCategoryModal').modal('show');
+        });
+    }
+
+    function categoryDetails(id) {
+        var url = "{{url('/report/category/show')}}/" + id;
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).done(function(data) {
+            $('.showDetails').html(data.showCategory);
+            $('#detailsCategoryModal').modal('show');
         });
     }
 
     // Function for delete Customer...
-    function deleteOrganizationMember(id) {
+    function deleteSkill(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -144,7 +150,7 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-organization-member-' + id).submit();
+                document.getElementById('delete-skill-' + id).submit();
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel

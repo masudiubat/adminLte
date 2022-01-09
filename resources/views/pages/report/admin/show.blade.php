@@ -55,10 +55,10 @@
             <div class="card-header">
                 <h3 class="card-title">Report</h3>
                 <div class="text-right pull-right">
-                    <a href="{{route('researcher.report.pdf.download', $report->id)}}" class="btn btn-sm btn-default">
+                    <a href="{{route('researcher.report.pdf.download', $report->id)}}" class="btn btn-sm btn-default" style="border: 2px solid #007bff">
                         <i class="fas fa-file-pdf"></i> PDF Download
                     </a>
-                    <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-sm btn-default">
+                    <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-sm btn-default" style="border: 2px solid #007bff">
                         <i class="fas fa-edit"></i> Edit Report
                     </a>
                 </div>

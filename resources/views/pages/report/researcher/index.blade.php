@@ -17,6 +17,7 @@
 @endpush
 @section('breadcrumb')
 <li class="breadcrumb-item active">Reports</li>
+
 @endsection
 
 @section('content')
@@ -46,7 +47,7 @@
                             <td>{{ $report->project->title }}</td>
                             <td>{{ date('M d, Y', strtotime($report->project->end_date)) }}</td>
                             <td>
-                                <a href="{{route('researcher.report.edit', $report->id)}}" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                <a href="{{route('researcher.report.show', $report->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-eye"></i></a>
                                 <a href="#" onclick="event.preventDefault(); deleteCategory('{{$report->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
                                 <form id="delete-category-{{ $report->id }}" action="{{route('report.category.destroy', $report->id)}}" method="POST" style="display: none;">

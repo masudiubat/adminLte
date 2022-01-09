@@ -28,6 +28,7 @@ class CreateProjectReportsTable extends Migration
             $table->string('cvss')->nullable();
             $table->string('severity')->nullable();
             $table->tinyInteger('is_approved')->default('0');
+            $table->tinyInteger('is_archive')->default('0');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

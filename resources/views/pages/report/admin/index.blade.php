@@ -48,7 +48,8 @@
                             <td>
                                 <a href="{{route('admin.report.show', $report->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                                 <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
-                                <a href="#" onclick="event.preventDefault(); deleteCategory('{{$report->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                                <a href="{{route('admin.report.send.archive', $report->id)}}" onclick="event.preventDefault(); sendToArchive('{{$report->id}}');" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Send to Archive"><i class="fa fa-archive"></i></a>
+                                <a href="#" onclick="event.preventDefault(); deleteCategory('{{$report->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Permanently"><i class="fa fa-trash"></i></a>
 
                                 <form id="delete-category-{{ $report->id }}" action="{{route('report.category.destroy', $report->id)}}" method="POST" style="display: none;">
                                     @csrf
@@ -233,6 +234,33 @@
             $('.showDetails').html(data.showCategory);
             $('#detailsCategoryModal').modal('show');
         });
+    }
+
+    // Function for delete Customer...
+    function sendToArchive(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You can find it to archive",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, archive it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Archived!',
+                    'Your file has been archived.',
+                    'success'
+                )
+            } {
+                Swal.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                );
+            }
+        })
     }
 
     // Function for delete Customer...

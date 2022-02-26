@@ -67,6 +67,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{route('admin.project.index') }}" class="{{ request()->routeIs('admin.project.index') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All Projects</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{route('admin.project.current') }}" class="{{ request()->routeIs('admin.project.current') ? 'nav-link active' : 'nav-link' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Current Projects</p>

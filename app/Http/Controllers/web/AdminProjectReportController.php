@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Library\ActivityLogLib;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Auth;
 
 class AdminProjectReportController extends Controller
 {
@@ -52,7 +53,80 @@ class AdminProjectReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'project' => 'required',
+            'scope' => 'required',
+            'title' => 'required',
+            'category' => 'required',
+            'url' => 'required',
+            'description' => 'required',
+            'reproduce' => 'required',
+            'security_impact' => 'required',
+            'recommendation' => 'required'
+        ], [
+            'project.required' => 'No project selected.',
+            'scope.required' => 'No scope selected.',
+            'title.required' => 'Write a title, title field is blank.',
+            'category.required' => 'Report category not selected.',
+            'url.required' => 'Url filed is blank.',
+            'description.required' => 'Description field is required.',
+            'reproduce.required' => 'Reproduce field is required.',
+            'security_impact.required' => 'Security impact is required',
+            'recommendation.required' => 'Recommendation is required'
+        ]);
+
+        $report = new ProjectReport();
+        $report->user_id = Auth::user()->id;
+
+        if ($request->has('project')) {
+            $report->project_id = $request->input('project');
+        }
+
+        if ($request->has('scope')) {
+            $report->project_scope_id = $request->input('scope');
+        }
+
+        if ($request->has('category')) {
+            $report->report_category_id = $request->input('category');
+        }
+
+        if ($request->has('title')) {
+            $report->title = $request->input('title');
+        }
+
+        if ($request->has('url')) {
+            $report->vulnerability_location = $request->input('url');
+        }
+
+        if ($request->has('description')) {
+            $report->description = $request->input('description');
+        }
+
+        if ($request->has('reproduce')) {
+            $report->step_to_reproduce = $request->input('reproduce');
+        }
+
+        if ($request->has('security_impact')) {
+            $report->security_impact = $request->input('security_impact');
+        }
+
+        if ($request->has('recommendation')) {
+            $report->recommended_fix = $request->input('recommendation');
+        }
+
+        $report->created_at = date('Y-m-d');
+
+        $createReport = $report->save();
+
+        if ($createReport) {
+            ActivityLogLib::addLog('User has created a new report named ' . $report->title . ' successfully.', 'success');
+            Toastr::success('New report named ' . $report->title . ' has created successfully.', 'success');
+            return redirect()->back();
+        } else {
+            ActivityLogLib::addLog('User has tried to create new report but failed.', 'error');
+            Toastr::error('W00ps! Something went wrong. Try again.', 'error');
+            return redirect()->back();
+        }
     }
 
     /**
@@ -64,9 +138,9 @@ class AdminProjectReportController extends Controller
     public function show($id)
     {
         $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
-        $description = $this->shortcodet_to_image_url($report->description);
-        $impact = $this->shortcodet_to_image_url($report->security_impact);
-        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
+        $description = shortcodet_to_image_url($report->description);
+        $impact = shortcodet_to_image_url($report->security_impact);
+        $recommended = shortcodet_to_image_url($report->recommended_fix);
 
         ActivityLogLib::addLog('User has viewed report successfully.', 'success');
         return view('pages.report.admin.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
@@ -154,46 +228,5 @@ class AdminProjectReportController extends Controller
     {
         $reports = ProjectReport::with('project')->where('is_archive', true)->orderBy('id', 'DESC')->get();
         return view('pages.report.admin.archieve', ['reports' => $reports]);
-    }
-
-    public function shortcodet_to_image_url($contentget)
-    {
-        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
-
-        if ($results === false || $results === 0) {
-            return $contentget;
-        }
-
-        [$placeholders, $figureids] = $matches;
-
-        $figureArr = array();
-        foreach ($figureids as $figure) {
-            $code = preg_replace('/<[^>]*>/', '', $figure);
-            $figureArr[] = $code;
-        }
-
-        $placeHolderArr = array();
-        foreach ($placeholders as $placeholder) {
-            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
-        }
-
-        $figures = ReportImage::query()
-            ->whereIn('code', $figureArr)
-            ->get();
-
-        if ($figures->isEmpty()) {
-            return $contentget;
-        }
-
-        foreach ($placeHolderArr as $index => $placeholder) {
-            if ($figures) {
-                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
-                    ->replace('##URL##', 'http://127.0.0.1:8000/storage/reports/' . $figures[$index]['name'])
-                    ->replace('##ALT##', $figures[$index]['alt']);
-
-                $contentget = str_replace($placeholders[$index], $content, $contentget);
-            }
-        }
-        return $contentget;
     }
 }

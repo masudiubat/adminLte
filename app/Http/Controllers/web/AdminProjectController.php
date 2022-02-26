@@ -23,6 +23,16 @@ class AdminProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function index()
+    {
+        $projects = Project::latest()->get();
+        return view('pages.project.all-project', ['projects' => $projects]);
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function current_project()
     {
         $projects = Project::whereDate('start_date', '<=', date("Y-m-d"))->whereDate('end_date', '>=', date("Y-m-d"))->get();

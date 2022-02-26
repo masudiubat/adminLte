@@ -85,7 +85,7 @@
                                             <th>Comment</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="scopeTblBody">
 
                                     </tbody>
                                 </table>
@@ -476,7 +476,7 @@
                         for (var x = 0; x < data.images.length; x++) {
                             tddata +=
                                 '<tr>' +
-                                '<td class="cpyBtnParent"><div class="btntxt">' + data.images[x]['code'] + '</div><button type="button" class="cpyBtn">Copy text</button></td>' +
+                                '<td class="cpyBtnParent"><div class="btntxt">' + data.images[x]['code'] + '</div><button type="button" class="cpyBtn" style="margin-top: -25px; margin-left: 30px;"><i class="fas fa-copy"></i></button></td>' +
                                 '<td>' + data.images[x]['original_name'] + '</td>' +
                                 '<td><img src="http://127.0.0.1:8000/storage/reports/' + data.images[x]['name'] + '"height="100px" width="120px"></td>' +
                                 '<td> <a onclick="event.preventDefault(); deleteImg(' + data.images[x]['id'] + ');" href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>' +
@@ -518,26 +518,15 @@
             copyCode();
         });
 
+        // Copy shortcode
         $('body').on('click', '.cpyBtnParent .cpyBtn', function() {
             /* Get the text field */
             _parent = $(this).parents('.cpyBtnParent');
-            var copyText = '[' + _parent.children(".btntxt").text() + ']';
-
+            var copyText = _parent.children(".btntxt").html();
             var $temp = $("<input>");
             $("body").append($temp);
-            $temp.val(copyText).select();
-
-
-            // copyText.select();
-            /* Select the text field */
-            testString.select();
-            copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-            /* Copy the text inside the text field */
-            navigator.clipboard.writeText(copyText.value);
-
-            /* Alert the copied text */
-            alert("Copied the text: " + copyText.value);
+            $temp.val('[' + copyText + ']').select();
+            document.execCommand("copy");
         });
 
 
@@ -561,7 +550,7 @@
                         '<td>' + data.scopes[i]['comment'] + '</td>' +
                         '</tr>';
                 };
-                $('tbody').html(res);
+                $('#scopeTblBody').html(res);
             });
 
         });

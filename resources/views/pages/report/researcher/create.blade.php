@@ -517,6 +517,7 @@
             copyCode();
         });
 
+        // Copy shortcode
         $('body').on('click', '.cpyBtnParent .cpyBtn', function() {
             /* Get the text field */
             _parent = $(this).parents('.cpyBtnParent');

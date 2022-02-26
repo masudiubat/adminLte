@@ -138,14 +138,14 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     /**
      * Project Related Routes
      */
-    Route::get('/admin/project/index', 'web\AdminProjectController@index')->name('admin.project.index')->middleware(['role:admin']);
+    Route::get('/admin/project/index', 'web\AdminProjectController@index')->name('admin.project.index')->middleware(['role:admin|moderator']);
     Route::get('/admin/project/create', 'web\AdminProjectController@create')->name('admin.project.create')->middleware(['role:admin']);
     Route::post('/admin/project/store', 'web\AdminProjectController@store')->name('admin.project.store')->middleware(['role:admin']);
     Route::get('/admin/project/search/member/{id}', 'web\AdminProjectController@search_member')->name('admin.project.search.member')->middleware(['role:admin']);
-    Route::get('/admin/project/current', 'web\AdminProjectController@current_project')->name('admin.project.current')->middleware(['role:admin']);
-    Route::get('/admin/project/upcoming', 'web\AdminProjectController@upcoming_project')->name('admin.project.upcoming')->middleware(['role:admin']);
-    Route::get('/admin/project/archieve', 'web\AdminProjectController@archieve_project')->name('admin.project.archieve')->middleware(['role:admin']);
-    Route::get('/admin/project/show/{id}', 'web\AdminProjectController@show')->name('admin.project.show')->middleware(['role:admin']);
+    Route::get('/admin/project/current', 'web\AdminProjectController@current_project')->name('admin.project.current')->middleware(['role:admin|moderator']);
+    Route::get('/admin/project/upcoming', 'web\AdminProjectController@upcoming_project')->name('admin.project.upcoming')->middleware(['role:admin|moderator']);
+    Route::get('/admin/project/archieve', 'web\AdminProjectController@archieve_project')->name('admin.project.archieve')->middleware(['role:admin|moderator']);
+    Route::get('/admin/project/show/{id}', 'web\AdminProjectController@show')->name('admin.project.show')->middleware(['role:admin|moderator']);
     Route::delete('/admin/project/destroy/{id}', 'web\AdminProjectController@destroy')->name('admin.project.destroy')->middleware(['role:admin']);
 
     /**
@@ -182,9 +182,9 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
      * Researcher Report related routes
      */
     Route::get('/researcher/new/report', 'web\ResearcherReportController@create')->name('researcher.new.report')->middleware(['role:researcher|admin']);
-    Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher|admin']);
-    Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher|admin']);
-    Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher|admin']);
+    Route::get('/project/scopes/search/{id}', 'web\ResearcherReportController@search_scopes')->name('project.scopes.search')->middleware(['role:researcher|admin|moderator']);
+    Route::post('/researcher/report/store', 'web\ResearcherReportController@store')->name('researcher.report.store')->middleware(['role:researcher|admin|moderator']);
+    Route::post('/researcher/report/files/upload', 'web\ResearcherReportController@files_upload')->name('researcher.report.files.upload')->middleware(['role:researcher|admin|moderator']);
     Route::get('/temp/image/delete/{id}', 'web\ResearcherReportController@temp_image_delete')->name('temp.image.delete')->middleware(['role:admin|researcher']);
     Route::get('/researcher/all/reports', 'web\ResearcherReportController@index')->name('researcher.all.reports')->middleware(['role:researcher|admin']);
     Route::get('/researcher/report/show/{id}', 'web\ResearcherReportController@show')->name('researcher.report.show')->middleware(['role:researcher|admin']);

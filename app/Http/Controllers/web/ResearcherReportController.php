@@ -225,9 +225,9 @@ class ResearcherReportController extends Controller
     public function show($id)
     {
         $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
-        $description = $this->shortcodet_to_image_url($report->description);
-        $impact = $this->shortcodet_to_image_url($report->security_impact);
-        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
+        $description = shortcodet_to_image_url($report->description);
+        $impact = shortcodet_to_image_url($report->security_impact);
+        $recommended = shortcodet_to_image_url($report->recommended_fix);
 
         ActivityLogLib::addLog('User has viewed report successfully.', 'success');
         return view('pages.report.researcher.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
@@ -240,11 +240,11 @@ class ResearcherReportController extends Controller
     public function dwonlaod_pdf($id)
     {
         $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
-        $description = $this->shortcodet_to_image_url($report->description);
-        $impact = $this->shortcodet_to_image_url($report->security_impact);
-        $recommended = $this->shortcodet_to_image_url($report->recommended_fix);
+        $description = shortcodet_to_pdf_image_url($report->description);
+        $impact = shortcodet_to_pdf_image_url($report->security_impact);
+        $recommended = shortcodet_to_pdf_image_url($report->recommended_fix);
 
-        //ActivityLogLib::addLog('User has downlaoded pdf format report successfully.', 'success');
+        ActivityLogLib::addLog('User has downlaoded pdf format report successfully.', 'success');
         $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pages.download.report', compact(['recommended', 'impact', 'report', 'description']))->setOptions(['defaultFont' => 'sans-serif']);
         //return view('pages.download.report', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
         return $pdf->download('report.pdf');
@@ -294,87 +294,5 @@ class ResearcherReportController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function shortcodet_to_image_url($contentget)
-    {
-        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
-
-        if ($results === false || $results === 0) {
-            return $contentget;
-        }
-
-        [$placeholders, $figureids] = $matches;
-
-        $figureArr = array();
-        foreach ($figureids as $figure) {
-            $code = preg_replace('/<[^>]*>/', '', $figure);
-            $figureArr[] = $code;
-        }
-
-        $placeHolderArr = array();
-        foreach ($placeholders as $placeholder) {
-            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
-        }
-
-        $figures = ReportImage::query()
-            ->whereIn('code', $figureArr)
-            ->get();
-
-        if ($figures->isEmpty()) {
-            return $contentget;
-        }
-
-        foreach ($placeHolderArr as $index => $placeholder) {
-            if ($figures) {
-                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="300px"><br/>')
-                    ->replace('##URL##', 'http://127.0.0.1:8000/storage/reports/' . $figures[$index]['name'])
-                    ->replace('##ALT##', $figures[$index]['alt']);
-
-                $contentget = str_replace($placeholders[$index], $content, $contentget);
-            }
-        }
-        return $contentget;
-    }
-
-    public function shortcodet_to_pdf_image_url($contentget)
-    {
-        $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
-
-        if ($results === false || $results === 0) {
-            return $contentget;
-        }
-
-        [$placeholders, $figureids] = $matches;
-
-        $figureArr = array();
-        foreach ($figureids as $figure) {
-            $code = preg_replace('/<[^>]*>/', '', $figure);
-            $figureArr[] = $code;
-        }
-
-        $placeHolderArr = array();
-        foreach ($placeholders as $placeholder) {
-            $placeHolderArr[] = preg_replace('/<[^>]*>/', '', $placeholder);
-        }
-
-        $figures = ReportImage::query()
-            ->whereIn('code', $figureArr)
-            ->get();
-
-        if ($figures->isEmpty()) {
-            return $contentget;
-        }
-
-        foreach ($placeHolderArr as $index => $placeholder) {
-            if ($figures) {
-                $content = Str::of('<br/><img src="##URL##" alt="##ALT##" class="img-responsive" height="200px" width="250px"><br/>')
-                    ->replace('##URL##', 'http://127.0.0.1:8000/images/reports/' . $figures[$index]['name'])
-                    ->replace('##ALT##', $figures[$index]['alt']);
-
-                $contentget = str_replace($placeholders[$index], $content, $contentget);
-            }
-        }
-        return $contentget;
     }
 }

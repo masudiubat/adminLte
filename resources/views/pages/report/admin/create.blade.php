@@ -11,6 +11,7 @@
 <!-- daterange picker -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/css/dropify.css' )}}">
+<link rel="stylesheet" href="{{ asset('assets/css/floating-button.css' )}}">
 <link href="https://fonts.googleapis.com/css?family=Roboto|Oswald|Michroma" rel="stylesheet" type="text/css">
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -37,6 +38,16 @@
         float: right;
         border: none;
         margin-right: 10px;
+    }
+
+    #input_2 {
+
+        position: fixed;
+
+        left: 1200px;
+
+        bottom: 150px;
+
     }
 </style>
 @endpush
@@ -154,6 +165,14 @@
                             <div class="form-group">
                                 <label for="recommendation">Recommended Fix <br /><small> Brief description with Objective, Scope, Rules and Instruction </small></label>
                                 <textarea class="form-control summernote" name="recommendation" id="recommendation"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label for="limitation">Constraints / Limitations </label>
+                                <textarea class="form-control summernote" name="limitation" id="limitation"></textarea>
                             </div>
                         </div>
                     </div>
@@ -353,8 +372,23 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer modal-footer">
+                        <div id="container-floating">
+                            <div class="nd4 nds" data-toggle="tooltip" data-placement="left" data-original-title="contract@gmail.com"><img class="reminder">
+                                <p class="letter">C</p>
+                            </div>
+                            <div class="nd3 nds" data-toggle="tooltip" data-placement="left" data-original-title="Reminder"><img class="reminder" src="//ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/1x/ic_reminders_speeddial_white_24dp.png" /></div>
+                            <div class="nd1 nds" data-toggle="tooltip" data-placement="left" data-original-title="Edoardo@live.it"><img class="reminder">
+                                <p class="letter">E</p>
+                            </div>
+
+                            <div id="floating-button" data-toggle="tooltip" data-placement="left" data-original-title="Create" onclick="newmail()">
+                                <p class="plus">+</p>
+                                <img class="edit" src="http://ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/1x/bt_compose2_1x.png">
+                            </div>
+
+                        </div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <div class="float-right text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
+                        <div class="float-right text-right"><button type="submit" id="input_2" class="btn btn-primary">Submit</button></div>
                     </div>
                 </form>
             </div>
@@ -413,6 +447,10 @@
         $('#recommendation').summernote({
             minHeight: 100,
             placeholder: "Any Recommended fix you'd like us to know about this submission."
+        })
+        $('#limitation').summernote({
+            minHeight: 100,
+            placeholder: "Constraints / Limitations..."
         })
 
         ///Date range picker

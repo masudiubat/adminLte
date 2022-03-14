@@ -25,6 +25,7 @@ class CreateProjectReportsTable extends Migration
             $table->text('step_to_reproduce')->nullable();
             $table->text('security_impact')->nullable();
             $table->text('recommended_fix')->nullable();
+            $table->text('limitation')->nullable();
             $table->string('cvss')->nullable();
             $table->string('severity')->nullable();
             $table->tinyInteger('is_approved')->default('0');

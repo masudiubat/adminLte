@@ -9,4 +9,16 @@
 @stack('js')
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.min.js')}}"></script>
+
 {!! Toastr::message() !!}
+
+<script>
+    @if($errors -> any())
+    @foreach($errors -> all() as $error)
+    toastr.error('{{ $error }}', 'Error', {
+        "closeButton": true,
+        "progressBar": true
+    });
+    @endforeach
+    @endif
+</script>

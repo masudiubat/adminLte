@@ -32,8 +32,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Code</th>
-                            <th>Email</th>
-                            <th>Phone</th>
                             <th>Address</th>
                             <th>Logo</th>
                             <th>Action</th>
@@ -42,10 +40,8 @@
                     <tbody>
                         @foreach($organizations->reverse() as $key => $organization)
                         <tr>
-                            <td><a onclick="event.preventDefault(); editCompany('{{ $organization->id }}');" href="#" data-toggle="tooltip" data-placement="top" title="Edit">{{ $organization->name }}</a></td>
+                            <td><a href="{{route('organization.show', $organization->id)}}" data-toggle="tooltip" data-placement="top" title="Edit">{{ $organization->name }}</a></td>
                             <td>{{ $organization->code_name }}</td>
-                            <td>{{ $organization->email }}</td>
-                            <td>{{ $organization->country_code }}{{ $organization->phone }}</td>
                             <td>{{ $organization->address }}</td>
                             <td>
                                 @if(!is_null($organization->logo))
@@ -53,6 +49,8 @@
                                 @endif
                             </td>
                             <td>
+                                <a href="{{route('organization.show', $organization->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                <a onclick="event.preventDefault(); editCompany('{{ $organization->id }}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
                                 <a href="#" onclick="event.preventDefault(); deleteCompany('{{$organization->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 
                                 <form id="delete-organization-{{ $organization->id }}" action="{{route('organization.destroy', $organization->id)}}" method="POST" style="display: none;">
@@ -67,8 +65,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Code</th>
-                            <th>Email</th>
-                            <th>Phone</th>
                             <th>Address</th>
                             <th>Logo</th>
                             <th>Action</th>
@@ -94,12 +90,13 @@
                             <!-- form start -->
                             <form id="newSkillForm" action="{{route('organization.store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="role" value="4">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="name">Organization Name <code>*</code></label>
-                                                <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name" required>
+                                                <input type="text" name="name" class="form-control" id="name" placeholder="Organization Name" required>
                                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                                             </div>
                                         </div>
@@ -115,16 +112,16 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="email">Email <code>*</code></label>
-                                                <input type="text" name="email" class="form-control" id="email" placeholder="Enter Email" required>
-                                                <span class="text-danger">{{ $errors->first('email') }}</span>
+                                                <label for="address">Organization Address </label>
+                                                <input type="text" name="address" class="form-control" id="address" placeholder="Organization Address">
+                                                <span class="text-danger">{{ $errors->first('address') }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="address">Address </label>
-                                                <input type="text" name="address" class="form-control" id="address" placeholder="Enter Address">
-                                                <span class="text-danger">{{ $errors->first('address') }}</span>
+                                                <label for="email">Lead Communicator Name</label>
+                                                <input type="text" name="communicator" class="form-control" id="communicator" placeholder="Communicator Name">
+                                                <span class="text-danger">{{ $errors->first('communicator') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -132,11 +129,11 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="country_code">Country Code</label>
-                                                <select class="form-control select2bs4 country_code" name="country_code" id="country_code" style="width: 100%;">
+                                                <label for="country_code">Communicator Country Code</label>
+                                                <select class="select2bs4" name="country_code" id="country_code" data-placeholder="Select Country code" style="width: 100%;">
                                                     @if(!is_null($phoneCodes))
                                                     @foreach($phoneCodes as $code)
-                                                    <option value="{{ $code->code }}">{{$code->country}} ({{$code->code}})</option>
+                                                    <option value="{{ $code->id }}">{{$code->country}} ({{$code->code}})</option>
                                                     @endforeach
                                                     @endif
                                                 </select>
@@ -145,13 +142,29 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="phone">Phone</label>
+                                                <label for="phone">Communicator Phone</label>
                                                 <input type="text" name="phone" class="form-control" id="phone2" placeholder="1XXXX">
                                                 <span class="text-danger">{{ $errors->first('phone') }}</span>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="email">Communicator Email</label>
+                                                <input type="text" name="email" class="form-control" id="email" placeholder="Communicator Email">
+                                                <span class="text-danger">{{ $errors->first('email') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="email">Communicator Designation</label>
+                                                <input type="text" name="designation" class="form-control" id="designation" placeholder="Official Designation">
+                                                <span class="text-danger">{{ $errors->first('designation') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">

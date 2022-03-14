@@ -22,6 +22,10 @@ Route::get('/', function () {
 });
 
 Route::get('/console-create', function () {
+    $permission = Permission::create(['name' => 'client project update']);
+    if ($permission) {
+        return "Permission Created";
+    }
     //$role = Role::create(['name' => 'super admin']);
     //$permission = Permission::create(['name' => 'Show user list']);
     //$role = Role::findOrFail(1);
@@ -60,8 +64,9 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::post('/user/store', 'web\UserController@store')->name('user.store');
     Route::get('/user/edit/{id}', 'web\UserController@edit')->name('user.edit');
     Route::post('/user/update/{id}', 'web\UserController@update')->name('user.update');
+    Route::get('/user/show/{id}', 'web\UserController@show')->name('user.show')->middleware(['role:admin']);
     Route::post('/user/password/change/{id}', 'web\UserController@change_user_password')->name('user.password.change');
-
+    Route::delete('/user/destroy/{id}', 'web\UserController@destroy')->name('user.destroy')->middleware(['role:admin']);
     Route::get('/personal/profile/detail/{id}', 'web\PersonalProfileController@show')->name('personal.profile.detail');
     Route::post('/personal/profile/change/password/{id}', 'web\PersonalProfileController@change_password')->name('personal.profile.change.password');
     /**
@@ -97,7 +102,7 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::delete('/organization/destroy/{id}', 'web\OrganizationController@destroy')->name('organization.destroy');
     Route::get('/organization/edit/{id}', 'web\OrganizationController@edit')->name('organization.edit');
     Route::post('/organization/update/{id}', 'web\OrganizationController@update')->name('organization.update');
-
+    Route::get('/organization/show/{id}', 'web\OrganizationController@show')->name('organization.show')->middleware(['role:admin']);
 
     /**
      * Social media relaed routes
@@ -160,14 +165,7 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::get('/admin/report/send/archive/{id}', 'web\AdminProjectReportController@report_send_archive')->name('admin.report.send.archive')->middleware(['role:admin|moderator']);
     Route::get('/admin/report/send/index/{id}', 'web\AdminProjectReportController@report_send_index')->name('admin.report.send.index')->middleware(['role:admin|moderator']);
     Route::get('/admin/report/archieve', 'web\AdminProjectReportController@archieve')->name('admin.report.archieve')->middleware(['role:admin|moderator']);
-    /**
-     * Researcher routes
-     */
-    Route::get('/client/project/index', 'web\ClientProjectController@index')->name('client.project.index')->middleware(['role:client']);
-    Route::get('/client/project/create', 'web\ClientProjectController@create')->name('client.project.create')->middleware(['role:client']);
-    Route::post('/client/project/store', 'web\ClientProjectController@store')->name('client.project.store')->middleware(['role:client']);
-    Route::get('/client/project/search/member', 'web\ClientProjectController@search_member')->name('client.project.search.member')->middleware(['role:client']);
-    Route::get('/client/project/show/{id}', 'web\ClientProjectController@show')->name('client.project.show')->middleware(['role:client']);
+
     /**
      * Researcher routes
      */
@@ -189,5 +187,42 @@ Route::group(['middleware' => ['auth', 'TwoFA']], function () {
     Route::get('/researcher/all/reports', 'web\ResearcherReportController@index')->name('researcher.all.reports')->middleware(['role:researcher|admin']);
     Route::get('/researcher/report/show/{id}', 'web\ResearcherReportController@show')->name('researcher.report.show')->middleware(['role:researcher|admin']);
     Route::get('/researcher/report/edit/{id}', 'web\ResearcherReportController@edit')->name('researcher.report.edit')->middleware(['role:researcher']);
-    Route::get('/researcher/report/pdf/download/{id}', 'web\ResearcherReportController@dwonlaod_pdf')->name('researcher.report.pdf.download')->middleware(['role:researcher|admin']);
+    Route::get('/researcher/report/pdf/download/{id}', 'web\ResearcherReportController@dwonlaod_pdf')->name('researcher.report.pdf.download')->middleware(['role:researcher|admin|moderator']);
+
+    /**
+     * Client project routes
+     */
+    Route::get('/client/project/index', 'web\ClientProjectController@index')->name('client.project.index')->middleware(['role_or_permission:client|client project read']);
+    Route::get('/client/project/create', 'web\ClientProjectController@create')->name('client.project.create')->middleware(['role_or_permission:client|client project write']);
+    Route::post('/client/project/store', 'web\ClientProjectController@store')->name('client.project.store')->middleware(['role_or_permission:client|client project write']);
+    Route::get('/client/project/search/member', 'web\ClientProjectController@search_member')->name('client.project.search.member')->middleware(['role_or_permission:client|client project write|client project update']);
+    Route::get('/client/project/show/{id}', 'web\ClientProjectController@show')->name('client.project.show')->middleware(['role_or_permission:client|client project read']);
+    Route::get('/client/project/edit/{id}', 'web\ClientProjectController@edit')->name('client.project.edit')->middleware('role_or_permission:client|client project update');
+    Route::post('/client/project/update/{id}', 'web\ClientProjectController@update')->name('client.project.update')->middleware(['role_or_permission:client|client project update']);
+    /**
+     * Client routes
+     */
+    Route::get('/organization/user/index', 'web\OrganizationUserController@index')->name('organization.user.index')->middleware(['role:client']);
+    Route::post('/organization/user/store', 'web\OrganizationUserController@store')->name('organization.user.store')->middleware(['role:client']);
+    Route::get('/organization/user/show/{id}', 'web\OrganizationUserController@show')->name('organization.user.show')->middleware(['role:client']);
+    Route::get('/organization/user/edit/{id}', 'web\OrganizationUserController@edit')->name('organization.user.edit')->middleware(['role:client']);
+    Route::post('/organization/user/update/{id}', 'web\OrganizationUserController@update')->name('organization.user.update')->middleware(['role:client']);
+    Route::delete('/organization/user/destroy/{id}', 'web\OrganizationUserController@destroy')->name('organization.user.destroy')->middleware(['role:client']);
+    /**
+     * Client report routes
+     */
+    Route::get('/organization/report/index', 'web\OrganizationReportController@index')->name('organization.report.index');
+    Route::get('/organization/report/show/{id}', 'web\OrganizationReportController@show')->name('organization.report.show');
+
+
+    /**
+     * Comments routes
+     */
+    Route::get('/comment/{id}', 'web\CommentController@index')->name('comment.index');
+    Route::post('/comment', 'web\CommentController@store')->name('comment.store');
+
+    /**
+     * Comment reply routes
+     */
+    Route::post('/comment/reply', 'web\CommentReplyController@store')->name('comment.reply.store');
 });

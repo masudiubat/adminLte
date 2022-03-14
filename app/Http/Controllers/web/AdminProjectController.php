@@ -58,10 +58,10 @@ class AdminProjectController extends Controller
      */
     public function create()
     {
-        $organizations = Organization::all();
-        $moderators = User::where('role', 'moderator')->get();
-        $researchers = User::where('role', 'researcher')->get();
-        $skills = Skill::all();
+        $organizations = Organization::where('status', 1)->get();
+        $moderators = User::where('role', 'moderator')->verified()->active()->get();
+        $researchers = User::where('role', 'researcher')->verified()->active()->get();
+        $skills = Skill::get();
         $scopes = Scope::all();
         return view('pages.project.create', ['scopes' => $scopes, 'skills' => $skills, 'organizations' => $organizations, 'moderators' => $moderators, 'researchers' => $researchers]);
     }
@@ -80,14 +80,15 @@ class AdminProjectController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate($request, [
-            'title' => 'required',
+            'title' => 'required | unique:projects',
             'organization' => 'required',
             'moderator' => 'required',
-            'date' => 'required',
-            ''
+            'date' => 'required'
         ], [
             'title.required' => 'Project title is required.',
+            'title.unique' => 'Project title is already exists.',
             'organization.required' => 'Organization is required',
             'moderator.required' => 'Moderator is required',
             'date.required' => 'Start and End date is required'
@@ -122,6 +123,12 @@ class AdminProjectController extends Controller
         }
 
         $project->created_at = date('Y-m-d');
+
+        echo "<pre>";
+        print_r($request->all());
+        die();
+
+
         $storeProject = $project->save();
         if ($storeProject) {
             if ($request->has('member')) {

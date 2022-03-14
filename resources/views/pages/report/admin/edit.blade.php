@@ -60,42 +60,29 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
-                                <label for="mobile">Select Project<code>*</code></label>
-                                <select class="form-control project" id="project" name="project" style="width: 100%;">
-                                    <option value="">Select Project</option>
-                                    @if(!is_null($projects))
-                                    @foreach($projects as $project)
-                                    <option value="{{ $project->id }}" {{ $report->project_id == $project->id ? 'selected' : '' }}>{{ $project->title }}</option>
-                                    @endforeach
-                                    @endif
-                                </select>
+                                <label for="project">Project<code>*</code></label>
+                                <input type="text" name="project" id="project" value="{{ $report->project->title }}" class="form-control project" readonly>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
-                                <label for="scope">Scope</label>
+                                <label for="scope">Scope</label><input type="text" name="project" id="project" value="{{ $report->project->title }}" class="form-control project" readonly>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Select</th>
                                             <th>Scope</th>
                                             <th>Terget Url</th>
                                             <th>Comment</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if($report->project->project_scopes)
-                                        @foreach($report->project->project_scopes as $scope)
                                         <tr>
-                                            <td><input type="radio" id="scopeId" name="scope" value="{{$scope->id}}" {{ $scope->id == $report->project_scope_id ? 'checked' : '' }}></td>
-                                            <td>{{ $scope->scope->name }}</td>
-                                            <td>{{ $scope->terget_url }}</td>
-                                            <td>{{ $scope->comment }}</td>
+                                            <td>{{ $report->project_scope->scope->name }}</td>
+                                            <td>{{ $report->project_scope->terget_url }}</td>
+                                            <td>{{ $report->project_scope->comment }}</td>
                                         </tr>
-                                        @endforeach
-                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -166,6 +153,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label for="limitation">Constraints / Limitations </label>
+                                <textarea class="form-control summernote" name="limitation" id="limitation">{!! $report->constraint !!}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
@@ -253,6 +249,11 @@
         $('#recommendation').summernote({
             minHeight: 100,
             placeholder: "Any Recommended fix you'd like us to know about this submission."
+        })
+
+        $('#limitation').summernote({
+            minHeight: 100,
+            placeholder: "Constraints or Limitations."
         })
 
         ///Date range picker

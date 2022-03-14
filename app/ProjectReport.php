@@ -3,7 +3,9 @@
 namespace App;
 
 use App\User;
+use App\Comment;
 use App\Project;
+use App\CommentReply;
 use App\ProjectScope;
 use App\ReportCategory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +24,7 @@ class ProjectReport extends Model
         'step_to_reproduce',
         'security_impact',
         'recommended_fix',
+        'constraint',
         'cvss',
         'severity',
         'is_approved',
@@ -48,5 +51,15 @@ class ProjectReport extends Model
     public function project_scope()
     {
         return $this->belongsTo(ProjectScope::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function comment_replies()
+    {
+        return $this->hasMany(CommentReply::class);
     }
 }

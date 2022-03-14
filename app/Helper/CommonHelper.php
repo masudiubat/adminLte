@@ -1,10 +1,12 @@
 <?php
+
 use App\ReportImage;
+
 /**
-* Function for convert short code to image url
-*/
-if(!function_exists("shortcodet_to_image_url")){
-	function shortcodet_to_image_url($contentget)
+ * Function for convert short code to image url
+ */
+if (!function_exists("shortcodet_to_image_url")) {
+    function shortcodet_to_image_url($contentget)
     {
         $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
 
@@ -48,10 +50,10 @@ if(!function_exists("shortcodet_to_image_url")){
 
 
 /**
-* Function for generate image url for download pdf
-*/
-if(!function_exists("shortcodet_to_pdf_image_url")){
-	function shortcodet_to_pdf_image_url($contentget)
+ * Function for generate image url for download pdf
+ */
+if (!function_exists("shortcodet_to_pdf_image_url")) {
+    function shortcodet_to_pdf_image_url($contentget)
     {
         $results = preg_match_all("/\[([^\]]*)\]/", $contentget, $matches);
 

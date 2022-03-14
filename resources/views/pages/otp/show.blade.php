@@ -5,9 +5,13 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
+
                 <div class="card-header">{{ __('Verify Your Account by OTP') }}</div>
 
                 <div class="card-body">
+                    @if(Session::has('verifiedAccount'))
+                    <div class="alert alert-success">{{ Session::get('verifiedAccount') }}</div>
+                    @endif
                     @if($errors->any())
                     <div class="alert alert-danger">
                         <strong>{{$errors->first()}}</strong>

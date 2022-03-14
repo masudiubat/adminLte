@@ -3,7 +3,20 @@
 @section('title', 'Projects Detail')
 
 @push('css')
+<style>
+    .progress {
+        height: 1rem !important;
+    }
 
+    .card-body>.table>thead>tr>td,
+    .card-body>.table>thead>tr>th {
+        border-top-width: 1px;
+    }
+
+    .card-body>.table {
+        margin-bottom: 15px;
+    }
+</style>
 @endpush
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="#">Projects</a></li>
@@ -18,7 +31,21 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-9 order-2 order-md-1">
+            <div class="col-12 col-md-12 col-lg-9">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentage}}%">
+                                        <span class="sr-only">50% Complete (success)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-12 col-sm-4">
                         <div class="info-box bg-light">
@@ -32,7 +59,7 @@
                         <div class="info-box bg-light">
                             <div class="info-box-content">
                                 <span class="info-box-text text-center text-muted">Estimated project duration</span>
-                                <span class="info-box-number text-center text-muted mb-0">{{ $timeDuration }} hr(s)</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ $timeDuration }} day(s)</span>
                             </div>
                         </div>
                     </div>
@@ -40,7 +67,7 @@
                         <div class="info-box bg-light">
                             <div class="info-box-content">
                                 <span class="info-box-text text-center text-muted">Time Remaining</span>
-                                <span class="info-box-number text-center text-muted mb-0">{{ $timeRemaining }} hr(s)</span>
+                                <span class="info-box-number text-center text-muted mb-0">{{ $timeRemaining }} day(s)</span>
                             </div>
                         </div>
                     </div>
@@ -48,10 +75,10 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
                         <h4>Project Scopes</h4>
-                        <div class="post">
-                            <table class="table table-bordered">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Scope</th>
@@ -78,7 +105,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h4>Project Brief</h4>
-                        <div class="post">
+                        <div class="post text-justify">
                             {!! $project->brief !!}
                         </div>
                         <div class="clearfix"></div>
@@ -87,13 +114,13 @@
                 <div class="row">
                     <div class="col-12">
                         <h4>Questionnaires</h4>
-                        <div class="post">
+                        <div class="post text-justify">
                             {!! $project->questionnaires !!}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-3 order-1 order-md-2">
+            <div class="col-12 col-md-12 col-lg-3">
                 <h5 class="mt-5 text-muted" style="margin-top: 0 !important">Organization</h5>
                 <div class="text-muted">
                     <p class="text-sm">Client Organization
@@ -135,6 +162,16 @@
                         @endif
                     </ul>
                 </div>
+                <h5 class="mt-5 text-muted">Project Skills</h5>
+                <ul class="list-unstyled">
+                    @if(!is_null($project->skills))
+                    @foreach($project->skills as $skill)
+                    <li>
+                        <i class="fa-fw fas fa-angle-right"></i> {{ $skill->name }}
+                    </li>
+                    @endforeach
+                    @endif
+                </ul>
             </div>
         </div>
     </div>

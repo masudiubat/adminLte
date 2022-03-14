@@ -56,13 +56,7 @@
                                 <span class="right badge badge-danger">Upcoming</span>
                                 @endif
                             <td>
-                                <a onclick="event.preventDefault(); editProject('{{ $project->id }}');" href="#" class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" onclick="event.preventDefault(); deleteProject('{{$project->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash-alt"></i></a>
-
-                                <form id="delete-project-{{ $project->id }}" action="{{route('admin.project.destroy', $project->id)}}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                <a href="{{route('client.project.edit', $project->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
                             </td>
                         </tr>
                         @endforeach

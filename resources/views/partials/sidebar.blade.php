@@ -149,6 +149,12 @@
             </li>
             @endhasanyrole
             @hasanyrole('client')
+            <li class="nav-item">
+                <a href="{{route('organization.report.index')}}" class="{{ request()->routeIs('organization.report*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-bug"></i>
+                    <p>Reports</p>
+                </a>
+            </li>
             <li class="{{ request()->routeIs('client.project*') ? 'nav-item menu-open' : 'nav-item' }}">
                 <a href="#" class="{{ request()->routeIs('client.project*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-project-diagram"></i>
@@ -172,7 +178,48 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item">
+                <a href="{{route('organization.user.index')}}" class="{{ request()->routeIs('organization.user*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>Team Management</p>
+                </a>
+            </li>
+
             @endhasanyrole
+
+            @canany(['client project delete', 'client project read', 'client project write', 'client project update'])
+            <li class="{{ request()->routeIs('client.project*') ? 'nav-item menu-open' : 'nav-item' }}">
+                <a href="#" class="{{ request()->routeIs('client.project*') ? 'nav-link active' : 'nav-link' }}">
+                    <i class="nav-icon fas fa-project-diagram"></i>
+                    <p>
+                        Projects
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    @can('client project write')
+                    <li class="nav-item">
+                        <a href="{{route('client.project.create')}}" class="{{ request()->routeIs('client.project.create*') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>New Project </p>
+                        </a>
+                    </li>
+                    @endcan
+                    @canany(['client project delete', 'client project read', 'client project update'])
+                    <li class="nav-item">
+                        <a href="{{route('client.project.index') }}" class="{{ request()->routeIs('client.project.index') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All Projects</p>
+                        </a>
+                    </li>
+                    @endcanany
+                </ul>
+            </li>
+            @endcanany
+
+
+
+
             @hasanyrole('admin')
             <li class="nav-header">AUXILIARY TOOLS</li>
             <li class="nav-item">
@@ -205,7 +252,7 @@
             <li class="nav-item">
                 <a href="{{route('user.index')}}" class="{{ request()->routeIs('user*') ? 'nav-link active' : 'nav-link' }}">
                     <i class="nav-icon fas fa-users"></i>
-                    <p>Admin User </p>
+                    <p>User Management</p>
                 </a>
             </li>
             <li class="nav-item">

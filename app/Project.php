@@ -5,6 +5,8 @@ namespace App;
 use App\User;
 use App\Scope;
 use App\Skill;
+use App\Comment;
+use App\CommentReply;
 use App\Organization;
 use App\ProjectReport;
 use App\OrganizationMember;
@@ -63,5 +65,15 @@ class Project extends Model
     public function project_reports()
     {
         return $this->hasMany(ProjectReport::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function comment_replies()
+    {
+        return $this->hasMany(CommentReply::class);
     }
 }

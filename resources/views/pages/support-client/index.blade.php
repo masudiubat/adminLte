@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Users')
+@section('title', 'Team Members')
 
 @push('css')
 <!-- DataTables -->
@@ -14,10 +14,14 @@
     .badge {
         font-size: 95%;
     }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #495057;
+    }
 </style>
 @endpush
 @section('breadcrumb')
-<li class="breadcrumb-item active">Users</li>
+<li class="breadcrumb-item active">Team Members</li>
 @endsection
 
 @section('content')
@@ -25,10 +29,13 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Users</h3>
-                <div class="add-user-btn float-right" style="width:20%">
-                    <button type="button" class="btn btn-block btn-outline-success" data-toggle="modal" data-target="#NewUserModal">Add New User</button>
-                </div>
+                @if($userOrgId->organization->maximum_members <= $users->count())
+                    <div class="alert alert-warning">You have reached your maximum member creation limit. </div>
+                    @endif
+                    <h3 class="card-title">Team Members</h3>
+                    <div class="add-user-btn float-right" style="width:20%">
+                        <button type="button" class="btn btn-block btn-outline-success d-flex justify-content-center d-md-table mx-auto" data-toggle="modal" data-target="#NewUserModal" {{$userOrgId->organization->maximum_members <= $users->count() ? 'disabled' : ''}}>Add Team Member</button>
+                    </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -37,49 +44,35 @@
                         <tr>
                             <th>Image</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
+                            <th>Designation</th>
                             <th>Role</th>
-                            <th>Verification</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users->reverse() as $user)
+                        @foreach($users as $user)
                         <tr>
                             <td>
-                                @if($user->image != null)
-                                <img class="img-fluid" src="{{ asset('images/users/'. $user->image)}}" alt="Photo" height="70px" width="65px">
+                                @if($user->user->image != null)
+                                <img class="img-fluid" src="{{ asset('images/users/'. $user->user->image)}}" alt="Photo" height="70px" width="65px">
                                 @else
                                 <img class="img-fluid" src="{{ asset('images/users/demo_profile_image.jpg')}}" alt="Photo" height="70px" width="65px">
                                 @endif
                             </td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->country_code }}{{ $user->phone }}</td>
-                            <td>
-                                @if(!is_null($user->roles))
-                                @foreach($user->roles as $userRole)
-                                {{ ucfirst($userRole->name) }}
-                                @endforeach
-                                @endif
-                            </td>
-                            <td>
-                                @if($user->email_verified_at)
-                                <label class="float-right badge bg-success">{{ date('d M, Y', strtotime($user->email_verified_at)) }}</label>
-                                @else
-                                <span class="float-right badge bg-warning">Unverified</span>
-                                @endif
-                            <td>
-                                <a href="{{route('user.show', $user->id)}}" class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
-                                <a onclick="event.preventDefault(); editUser('{{ $user->id }}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit User Info"><i class="fa fa-edit"></i></a>
-                                <a onclick="event.preventDefault(); changeUserPassword('{{ $user->id }}');" href="#" class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Change Password"><i class="fa fa-key"></i></a>
-                                <a href="#" onclick="event.preventDefault(); deleteUser('{{$user->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                            <td>{{ $user->user->name }}</td>
+                            <td>{{ $user->designation }}</td>
+                            <td>{{ $user->role }}</td>
 
-                                <form id="delete-user-{{ $user->id }}" action="{{route('user.destroy', $user->id)}}" method="POST" style="display: none;">
+                            <td>
+                                <a onclick="event.preventDefault(); showUser('{{ $user->user->id }}');" href="#" class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                <a onclick="event.preventDefault(); editUser('{{ $user->user->id }}');" href="#" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                @if(Auth::user()->id != $user->user->id)
+                                <a href="#" onclick="event.preventDefault(); deleteUser('{{$user->user->id}}');" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+                                <form id="organization-user-delete-{{ $user->user->id }}" action="{{route('organization.user.destroy', $user->user->id)}}" method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -88,10 +81,8 @@
                         <tr>
                             <th>Image</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
+                            <th>Designation</th>
                             <th>Role</th>
-                            <th>Verification</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -106,7 +97,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Create New User</h4>
+                        <h4 class="modal-title">Add Team Member</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -114,20 +105,43 @@
                     <div class="modal-body">
                         <div class="card card-primary">
                             <!-- form start -->
-                            <form action="{{route('user.store')}}" method="POST" enctype="multipart/form-data">
+                            <form action="{{route('organization.user.store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="organization_id" value="{{$userOrgId->organization_id}}">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="name">Name <code>*</code></label>
+                                                <label for="organization_name">Organization <code>*</code></label>
+                                                <input type="text" name="organization_name" class="form-control {{ $errors->has('organization_id') ? 'has-error' : '' }}" value="{{$userOrgId->organization->name}}" required readonly>
+                                                <span class="text-danger">{{ $errors->first('organization_id') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="project">Select Project</label>
+                                                <select class="form-control select2bs4" multiple="multiple" id="project" name="project[]" data-placeholder="Select Projects" style="width: 100%;">
+                                                    @if($projects->count())
+                                                    @foreach($projects as $project)
+                                                    <option value="{{$project->id}}">{{$project->title}}</option>
+                                                    @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="name">Member Name <code>*</code></label>
                                                 <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name" required>
                                                 <span class="text-danger">{{ $errors->first('name') }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="email">Email address <code>*</code></label>
+                                                <label for="email">Member Email <code>*</code></label>
                                                 <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" required>
                                                 <span class="text-danger">{{ $errors->first('email') }}</span>
                                             </div>
@@ -155,29 +169,55 @@
                                                 <span class="text-danger">{{ $errors->first('phone') }}</span>
                                             </div>
                                         </div>
-
                                     </div>
+
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="address">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" placeholder="Enter Address">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="address">Role</label>
-                                                <select class="form-control" id="role" name="role">
-                                                    <option value="">Select Role</option>
-                                                    @if(!is_null($roles))
-                                                    @foreach($roles as $role)
-                                                    <option value="{{$role->id}}">{{ucfirst($role->name)}}</option>
-                                                    @endforeach
-                                                    @endif
-                                                </select>
+                                                <label for="designation">Official Designation <code>*</code></label>
+                                                <input type="text" name="designation" class="form-control" id="designation" placeholder="Official Designation" required>
+                                                <span class="text-danger">{{ $errors->first('designation') }}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Access Control List <code>*</code></label>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" type="checkbox" name="all_credential" id="select-all" value="all credentials">
+                                                    <label for="select-all" class="custom-control-label">Select All</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" type="checkbox" name="credentials[]" id="credential4" value="client project update">
+                                                    <label for="credential4" class="custom-control-label">Project Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> &nbsp; </label>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" type="checkbox" name="credentials[]" id="credential2" value="client project read">
+                                                    <label for="credential2" class="custom-control-label">Project Show</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" type="checkbox" name="credentials[]" id="credential5" value="client project delete">
+                                                    <label for="credential5" class="custom-control-label">Project Delete</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> &nbsp; </label>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" type="checkbox" name="credentials[]" id="credential3" value="client project write">
+                                                    <label for="credential3" class="custom-control-label">Project Create</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer modal-footer">
@@ -221,39 +261,19 @@
         <!-- End Modal for update user -->
 
 
-        <!-- Start Modal for change user password -->
-        <div class="modal fade" id="ChangePasswordModal">
-            <div class="modal-dialog">
+        <!-- Start Modal for show user info -->
+        <div class="modal fade" id="ShowUserModal">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Change User Password</h4>
+                        <h4 class="modal-title">User</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="card card-primary">
-                            <!-- form start -->
-                            <form id="changeUserPasswordForm" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="password">Password <code>*</code></label>
-                                        <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password-confirm">Confirm Password <code>*</code></label>
-                                        <input type="password" name="password_confirmation" class="form-control" id="password-confirm" placeholder="Re-enter Password" required>
-                                        <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <div class="float-right text-right"><button type="submit" class="btn btn-primary">Change Password</button></div>
-                                </div>
-                            </form>
+                        <div class="card card-primary AddUserInfo">
+
                         </div>
                         <!-- /.card -->
                     </div>
@@ -289,7 +309,9 @@
 <script>
     $(function() {
         //Initialize Select2 Elements
-        $('.select2').select2()
+        $('#project').select2({
+            placeholder: 'Select Projects'
+        }).val('').trigger('change');
 
         //Initialize Select2 Elements
         $('.select2bs4').select2({
@@ -328,8 +350,15 @@
 </script>
 
 <script>
+    $('#select-all').click(function() {
+        var checked = this.checked;
+        $('input[type="checkbox"]').each(function() {
+            this.checked = checked;
+        });
+    })
+
     function editUser(id) {
-        var url = "{{url('/user/edit')}}/" + id;
+        var url = "{{url('/organization/user/edit')}}/" + id;
         $.ajax({
             url: url,
             method: "GET",
@@ -339,25 +368,30 @@
         });
     }
 
-    function changeUserPassword(id) {
-        var url = "{{url('/user/password/change')}}/" + id;
-        $('#changeUserPasswordForm').attr('action', url);
-        $('#ChangePasswordModal').modal('show');
+    function showUser(id) {
+        var url = "{{url('/organization/user/show')}}/" + id;
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).done(function(data) {
+            $('.AddUserInfo').html(data.UserInfo);
+            $('#ShowUserModal').modal('show');
+        });
     }
 
     // Function for delete User...
     function deleteUser(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You will be able to revert this from archieve!",
+            text: "You won't be able to retrieve this!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Archieve it!'
+            confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-user-' + id).submit();
+                document.getElementById('organization-user-delete-' + id).submit();
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel

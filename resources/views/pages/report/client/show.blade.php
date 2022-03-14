@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/comments.css')}}">
 <style>
     .card-body body {
         font-size: 14pt;
@@ -41,6 +42,11 @@
         background-position: center;
         background-attachment: fixed;
         background-size: 100%;
+    }
+
+    .btn .badge {
+        position: relative;
+        top: -9px;
     }
 </style>
 @endpush
@@ -230,6 +236,35 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <h3 class="text-center mb-5">comment section </h3>
+            <!-- comments show box -->
+            <div class="AddcommentBox" id="AddCommentBox">
+            </div>
+
+
+            <div class="comment-form mt-4">
+                <form id="commentStoreForm">
+                    <div class="alert alert-success" role="alert" id="successMsg" style="display: none">
+                        Your comment has sent.
+                    </div>
+                    <input type="hidden" id="projectId" name="project_id" value="{{$report->project->id}}">
+                    <input type="hidden" id="reportId" name="report_id" value="{{$report->id}}">
+                    <div class="form-group">
+                        <label for="comment">Comment</label>
+                        <textarea id="comment" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /.row -->
 @endsection
 
@@ -247,4 +282,76 @@
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
+
+<script>
+    // send new comment
+    $('#commentStoreForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let project = $('#projectId').val();
+        let report = $('#reportId').val();
+        let comment = $('#comment').val();
+
+        $.ajax({
+            url: "/comment",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                project: project,
+                report: report,
+                comment: comment,
+            },
+            success: function(response) {
+                $('#successMsg').show();
+                // Ajax call for comments index
+                $.ajax({
+                    url: "/comment/" + report,
+                    type: "GET",
+                    success: function(data) {
+                        $('.AddcommentBox').html(data.comments);
+                    },
+                });
+                //finish
+            },
+        });
+    });
+
+    function commentReply($id) {
+        $('.formReply_' + $id).toggle();
+    }
+
+    // send new comment
+    $('#replyFormId').on('submit', function(e) {
+        e.preventDefault();
+
+        let project = $('#projectId').val();
+        let report = $('#reportId').val();
+        let comment = $('#commentId').val();
+        let reply = $('#reply').val();
+
+        $.ajax({
+            url: "/comment/reply",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                project: project,
+                report: report,
+                comment: comment,
+                reply: reply,
+            },
+            success: function(response) {
+                // Ajax call for comments index
+                $.ajax({
+                    url: "/comment/" + report,
+                    type: "GET",
+                    success: function(data) {
+                        $('.AddcommentBox').html(data.comments);
+                    },
+                });
+                //finish
+            },
+        });
+    });
+</script>
+
 @endpush

@@ -44,7 +44,7 @@
                             <td>{{ $key+1 }}</td>
                             <td>{{ substr($report->project->title, 0, 60) }}...</td>
                             <td>{{ substr($report->title, 0, 60) }}...</td>
-                            <td>{{ date('jS F, y', strtotime($report->created_at)) }}</td>
+                            <td>{{ date('jS F, y', strtotime($report->project->end_date)) }}</td>
                             <td>
                                 <a href="{{route('admin.report.show', $report->id)}}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                                 <a href="{{route('admin.report.edit', $report->id)}}" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>

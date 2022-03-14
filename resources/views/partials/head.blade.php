@@ -31,5 +31,9 @@
     .card-body {
         padding-bottom: .20rem;
     }
+
+    .has-error {
+        border: 1px solid red;
+    }
 </style>
 @stack('css')

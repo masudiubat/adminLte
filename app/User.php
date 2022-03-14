@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Comment;
 use App\Customer;
 use App\ReportImage;
 use App\ProjectReport;
@@ -62,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function organization_member()
     {
-        return $this->hasMany(OrganizationMember::class);
+        return $this->hasOne(OrganizationMember::class);
     }
 
     public function projects()
@@ -83,5 +84,35 @@ class User extends Authenticatable implements MustVerifyEmail
     public function project_reports()
     {
         return $this->hasMany(ProjectReport::class);
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereNotNull('email_verified_at');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function comments_created()
+    {
+        return $this->hasMany(Comment::class, 'creator_user_id');
+    }
+
+    public function comment_replies_created()
+    {
+        return $this->hasMany(CommentReply::class, 'reply_creator_user_id');
+    }
+
+    public function comments()
+    {
+        return $this->belongsToMany(Comment::class);
+    }
+
+    public function comment_replies()
+    {
+        return $this->belongsToMany(CommentReply::class);
     }
 }

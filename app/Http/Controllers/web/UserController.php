@@ -24,11 +24,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->get();
+        $users = User::with('roles')->where('status', 1)->get();
         $codes = CountryCode::all();
         $roles = Role::all();
+        $trashed = User::with('roles')->where('status', 0)->get();
         ActivityLogLib::addLog('View user list successfully', 'success');
-        return view('pages.user.index', ['users' => $users, 'codes' => $codes, 'roles' => $roles]);
+        return view('pages.user.index', ['users' => $users, 'codes' => $codes, 'roles' => $roles, 'trashed' => $trashed]);
     }
 
     /**
@@ -139,7 +140,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::with('project_reports', 'projects')->where('status', 1)->findOrFail($id);
+        $reportCount = $user->project_reports->count();
+
+        return view('pages.user.show', compact('user', 'reportCount'));
     }
 
     /**
@@ -150,7 +154,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::with('roles')->findOrFail($id);
+        $user = User::with('roles')->where('status', 1)->findOrFail($id);
 
         $roleArr = array();
         foreach ($user->roles as $exRole) {
@@ -171,7 +175,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('status', 1)->findOrFail($id);
         $verificationUrl = 'email/verify/' . $user->id . "/" . sha1(time());
         echo $verificationUrl;
         die();
@@ -246,7 +250,7 @@ class UserController extends Controller
             'password.confirmed' => 'Confirmation password are not match.'
         ]);
 
-        $user = User::findOrFail($id);
+        $user = User::where('status', 1)->findOrFail($id);
         $user->password = bcrypt($request->input('password'));
         $user->updated_at = date('Y-m-d');
         $userPasswordChagne = $user->save();
@@ -269,6 +273,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::where('status', 1)->findOrFail($id);
+        $user->status = 0;
+        $userDelete = $user->save();
+        if ($userDelete) {
+            ActivityLogLib::addLog('Admin has Deleted ' . $user->name . ' successfully.', 'success');
+            Toastr::success('User has deleted successfully.', 'success');
+            return redirect()->back();
+        } else {
+            ActivityLogLib::addLog('Admin has tried to delete user.', 'error');
+            Toastr::error('W00ps! Something went wrong. Try again.', 'error');
+            return redirect()->back();
+        }
     }
 }

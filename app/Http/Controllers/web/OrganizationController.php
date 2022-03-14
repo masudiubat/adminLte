@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\web;
 
+use App\User;
 use App\CountryCode;
 use App\Organization;
+use App\OrganizationMember;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Library\ActivityLogLib;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserAccessCredentialMail;
 
 class OrganizationController extends Controller
 {
@@ -19,7 +24,7 @@ class OrganizationController extends Controller
      */
     public function index()
     {
-        $organizations = Organization::all();
+        $organizations = Organization::where('status', 1)->get();
         $phoneCodes = CountryCode::all();
         ActivityLogLib::addLog('User has viewed organization list successfully.', 'success');
         return view('pages.organization.index', ['organizations' => $organizations, 'phoneCodes' => $phoneCodes]);
@@ -33,18 +38,32 @@ class OrganizationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required | unique:organizations',
-            'email' => 'required | email | unique:organizations'
-        ], [
-            'name.required' => 'Company name is required.',
-            'name.unique' => 'Company name is already registered',
-            'email.required' => 'Email address is required.',
-            'email.unique' => 'Email address is already registered',
-            'email.email' => 'Invalid email address'
-        ]);
+        if ($request->filled('communicator')) {
+            $this->validate($request, [
+                'name' => 'required | unique:organizations',
+                'email' => 'required | email | unique:users',
+                'country_code' => 'required',
+                'phone' => 'required | unique:users'
+            ], [
+                'email.required' => 'Email address is required.',
+                'email.unique' => 'Email address is already registered',
+                'email.email' => 'Invalid email address',
+                'country_code.required' => 'Country code is required',
+                'phone.required' => 'Phone number field is mandatory field',
+                'phone.unique' => 'This number is already registered',
+                'name.required' => 'Company name is required.',
+                'name.unique' => 'Company name is already registered'
+            ]);
+        } else {
+            $this->validate($request, [
+                'name' => 'required | unique:organizations',
+            ], [
+                'name.required' => 'Company name is required.',
+                'name.unique' => 'Company name is already registered'
+            ]);
+        }
 
-        // Code for insert profile image
+        // Code for insert organization image
         $name = $request->input('name');
         $slug = Str::slug($name);
         $lastId = Organization::select('id')->orderBy('id', 'DESC')->first();
@@ -70,18 +89,6 @@ class OrganizationController extends Controller
             $organization->code_name = $request->input('code_name');
         }
 
-        if ($request->has('email')) {
-            $organization->email = $request->input('email');
-        }
-
-        if ($request->has('country_code')) {
-            $organization->country_code = $request->input('country_code');
-        }
-
-        if ($request->has('phone')) {
-            $organization->phone = $request->input('phone');
-        }
-
         if ($request->has('address')) {
             $organization->address = $request->input('address');
         }
@@ -95,6 +102,65 @@ class OrganizationController extends Controller
         $storeOrganization = $organization->save();
 
         if ($storeOrganization) {
+
+            // Add user if communicator define
+            if ($request->filled('communicator')) {
+
+                $user = new User();
+
+                if ($request->has('communicator')) {
+                    $user->name = $request->input('communicator');
+                }
+
+                if ($request->has('email')) {
+                    $user->email = $request->input('email');
+                }
+
+                if ($request->has('country_code')) {
+                    $country = CountryCode::findOrFail($request->input('country_code'));
+                    $user->country_code = $country->code;
+                    $user->country = $country->country;
+                }
+
+                if ($request->has('phone')) {
+                    $user->phone = $request->input('phone');
+                }
+
+                $user->role = 'client';
+
+                $password = Str::random(8);
+                $user->password = bcrypt($password);
+
+                $user->created_at = date('Y-m-d');
+                $createUser = $user->save();
+
+                if ($createUser) {
+                    $user->roles()->attach($request->input('role'));
+                    // Send email for user credentials
+                    $myEmail = $user->email;
+                    $details = [
+                        'title' => 'Your beetles account details.',
+                        'url' => 'http://bcp.bigweb.com.bd',
+                        'password' => $password,
+                        'name' => $user->name,
+                        'email' => $user->email
+                    ];
+                    Mail::to($myEmail)->send(new UserAccessCredentialMail($details));
+
+                    // Send email to verification user account
+                    $user->sendEmailVerificationNotification();
+
+                    // Create organization members
+                    $organizationMember = new OrganizationMember();
+                    $organizationMember->user_id = $user->id;
+                    $organizationMember->organization_id = $organization->id;
+                    $organizationMember->designation = $request->input('designation');
+                    $organizationMember->role = 'leading person';
+                    $organizationMember->is_leading_person = 1;
+                    $organizationMember->created_at = date('Y-m-d');
+                    $organizationMember->save();
+                }
+            }
             ActivityLogLib::addLog('User has created a new organization named ' . $organization->name . ' successfully.', 'success');
             Toastr::success('New company named ' . $organization->name . ' has created successfully.', 'success');
             return redirect()->back();
@@ -103,6 +169,18 @@ class OrganizationController extends Controller
             Toastr::error('W00ps! Something went wrong. Try again.', 'error');
             return redirect()->back();
         }
+    }
+
+    /**
+     * Show the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $organization = Organization::with('organization_members', 'projects')->where('status', 1)->findOrFail($id);
+        return view('pages.organization.show', compact('organization'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -130,13 +208,9 @@ class OrganizationController extends Controller
         $organization = Organization::findOrFail($id);
         $this->validate($request, [
             'name' => 'required | unique:organizations,name,' . $organization->id,
-            'email' => 'required | email | unique:organizations,email,' . $organization->id
         ], [
             'name.required' => 'Company name is required.',
-            'name.unique' => 'Company name is already registered',
-            'email.required' => 'Email address is required.',
-            'email.unique' => 'Email address is already registered',
-            'email.email' => 'Invalid email address'
+            'name.unique' => 'Company name is already registered'
         ]);
 
         // Code for insert profile image
@@ -155,18 +229,6 @@ class OrganizationController extends Controller
 
         if ($request->has('code_name')) {
             $organization->code_name = $request->input('code_name');
-        }
-
-        if ($request->has('email')) {
-            $organization->email = $request->input('email');
-        }
-
-        if ($request->has('country_code')) {
-            $organization->country_code = $request->input('country_code');
-        }
-
-        if ($request->has('phone')) {
-            $organization->phone = $request->input('phone');
         }
 
         if ($request->has('address')) {

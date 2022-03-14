@@ -58,21 +58,14 @@ class AdminProjectReportController extends Controller
             'scope' => 'required',
             'title' => 'required',
             'category' => 'required',
-            'url' => 'required',
-            'description' => 'required',
-            'reproduce' => 'required',
-            'security_impact' => 'required',
-            'recommendation' => 'required'
+            'url' => 'required'
+
         ], [
             'project.required' => 'No project selected.',
             'scope.required' => 'No scope selected.',
             'title.required' => 'Write a title, title field is blank.',
             'category.required' => 'Report category not selected.',
-            'url.required' => 'Url filed is blank.',
-            'description.required' => 'Description field is required.',
-            'reproduce.required' => 'Reproduce field is required.',
-            'security_impact.required' => 'Security impact is required',
-            'recommendation.required' => 'Recommendation is required'
+            'url.required' => 'Url filed is blank.'
         ]);
 
         $report = new ProjectReport();
@@ -113,6 +106,9 @@ class AdminProjectReportController extends Controller
         if ($request->has('recommendation')) {
             $report->recommended_fix = $request->input('recommendation');
         }
+        if ($request->has('limitation')) {
+            $report->constraint = $request->input('limitation');
+        }
 
         $report->created_at = date('Y-m-d');
 
@@ -141,9 +137,10 @@ class AdminProjectReportController extends Controller
         $description = shortcodet_to_image_url($report->description);
         $impact = shortcodet_to_image_url($report->security_impact);
         $recommended = shortcodet_to_image_url($report->recommended_fix);
+        $limitation = shortcodet_to_image_url($report->constraint);
 
         ActivityLogLib::addLog('User has viewed report successfully.', 'success');
-        return view('pages.report.admin.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description]);
+        return view('pages.report.admin.show', ['recommended' => $recommended, 'impact' => $impact, 'report' => $report, 'description' => $description, 'limitation' => $limitation]);
     }
 
     /**
@@ -156,17 +153,9 @@ class AdminProjectReportController extends Controller
     {
         $report = ProjectReport::with('project', 'user', 'report_category', 'project_scope')->findOrFail($id);
 
-        $projects = Project::with('organization', 'project_scopes')
-            ->whereDate('start_date', '<=', date("Y-m-d"))
-            ->whereDate('end_date', '>=', date("Y-m-d"))
-            ->where('is_approved', 1)
-            ->where('status', 'active')
-            ->orderBy('id', 'DESC')
-            ->get();
-
         $categories = ReportCategory::all();
 
-        return view('pages.report.admin.edit', ['report' => $report, 'projects' => $projects, 'categories' => $categories]);
+        return view('pages.report.admin.edit', ['report' => $report, 'categories' => $categories]);
     }
 
     /**
@@ -178,7 +167,63 @@ class AdminProjectReportController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'category' => 'required',
+            'url' => 'required'
+
+        ], [
+            'title.required' => 'Write a title, title field is blank.',
+            'category.required' => 'Report category not selected.',
+            'url.required' => 'Url filed is blank.'
+        ]);
+
+        $report = ProjectReport::findOrFail($id);
+
+        if ($request->has('category')) {
+            $report->report_category_id = $request->input('category');
+        }
+
+        if ($request->has('title')) {
+            $report->title = $request->input('title');
+        }
+
+        if ($request->has('url')) {
+            $report->vulnerability_location = $request->input('url');
+        }
+
+        if ($request->has('description')) {
+            $report->description = $request->input('description');
+        }
+
+        if ($request->has('reproduce')) {
+            $report->step_to_reproduce = $request->input('reproduce');
+        }
+
+        if ($request->has('security_impact')) {
+            $report->security_impact = $request->input('security_impact');
+        }
+
+        if ($request->has('recommendation')) {
+            $report->recommended_fix = $request->input('recommendation');
+        }
+        if ($request->has('limitation')) {
+            $report->constraint = $request->input('limitation');
+        }
+
+        $report->updated_at = date('Y-m-d');
+
+        $updateReport = $report->save();
+
+        if ($updateReport) {
+            ActivityLogLib::addLog('User has updated a report named ' . $report->title . ' successfully.', 'success');
+            Toastr::success('Report named ' . $report->title . ' has updated successfully.', 'success');
+            return redirect()->back();
+        } else {
+            ActivityLogLib::addLog('User has tried to update report but failed.', 'error');
+            Toastr::error('W00ps! Something went wrong. Try again.', 'error');
+            return redirect()->back();
+        }
     }
 
     /**
